@@ -1,9 +1,6 @@
 from paddle.trainer.PyDataProvider2 import *
 import numpy as np
 
-# def init_hook(settings, **kwargs):
-#     pass
-
 
 def normalize(x):
     max_num = 0
@@ -24,7 +21,7 @@ def process(settings, filename):
         f.next()
         nodes = []
         for num, line in enumerate(f):
-            nodes.append(map(int, line.rstrip('\r\n').split(",")[0]))
+            nodes.append(map(int, line.rstrip('\r\n').split(",")[0])[0])
 
         nodes = normalize(nodes)
         all_speeds = []
@@ -34,8 +31,8 @@ def process(settings, filename):
             num_speed = len(speeds)
             all_speeds.append(speeds)
 
-        i = 0
-        while i < num_speed:
+        i = -1
+        while i < num_speed-1:
             i += 1
             yield {
                 'node': nodes,
