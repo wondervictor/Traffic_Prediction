@@ -12,29 +12,14 @@ def normalize(x):
     return normalized_nums
 
 
+
+
 @provider(input_types={
-    'node': dense_vector(328),
-    'label': dense_vector(328)
+    'time': dense_vector(288),
+    'label': dense_vector(288),
 })
 def process(settings, filename):
     with open(filename, 'r') as f:
         f.next()
-        nodes = []
-        for num, line in enumerate(f):
-            nodes.append(map(int, line.rstrip('\r\n').split(",")[0])[0])
-
-        nodes = normalize(nodes)
-        all_speeds = []
-        num_speed = 0
-        for row_num, line in enumerate(f):
-            speeds = map(int, line.rstrip('\r\n').split(",")[1:])
-            num_speed = len(speeds)
-            all_speeds.append(speeds)
-
-        i = -1
-        while i < num_speed-1:
-            i += 1
-            yield {
-                'node': nodes,
-                'label': [all_speeds[x][i] for x in range(328)]
-            }
+        pass
+    
