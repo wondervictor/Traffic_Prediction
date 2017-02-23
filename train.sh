@@ -6,7 +6,7 @@ cfg=trainer_config.py
 paddle train \
   --config=$cfg \
   --save_dir=./output \
-  --trainer_count=1 \
+  --trainer_count=4 \
   --log_period=1000 \
   --dot_period=10 \
   --num_passes=10 \
