@@ -18,7 +18,7 @@ LABEL_NUM = 328
 
 
 @provider(input_types={
-    'time': dense_vector(NODE_NUM),#dense_vector([NODE_NUM, TERM_NUM], seq_type=SequenceType.SEQUENCE),
+    'data': dense_vector(NODE_NUM),#dense_vector([NODE_NUM, TERM_NUM], seq_type=SequenceType.SEQUENCE),
     'label': dense_vector(NODE_NUM)#dense_vector([NODE_NUM, TERM_NUM], seq_type=SequenceType.SEQUENCE),
     },
     cache=CacheType.CACHE_PASS_IN_MEM
@@ -31,24 +31,15 @@ def process(settings, filename):
             speeds = map(float, line.rstrip('\r\n').split(",")[1:])
             all_speeds.append(speeds)
         end_time = len(all_speeds[1])
-        # for i in range(TERM_NUM, end_time-TERM_NUM):
-        #     speeds = []
-        #     labels = []
-        #     for j in range(0, 328):
-        #         speeds.append(all_speeds[j][i-TERM_NUM:i])
-        #         labels.append(all_speeds[j][i:i+TERM_NUM])
-        #     yield {
-        #         'time':speeds[]
-        #     }
+
         for i in range(0, end_time-TERM_NUM):
             speeds = []
             labels = []
             for j in range(0, 328):
                 speeds.append(all_speeds[j][i])
                 labels.append(all_speeds[j][i+TERM_NUM])
-
             yield {
-                'time': speeds,
+                'data': speeds,
                 'label': labels
             }
 
