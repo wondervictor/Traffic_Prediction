@@ -80,12 +80,13 @@ def points_to_point():
 
 
 def select_point_to_test():
-    points = ['21485', '21472', '21486', '21472']
+    points = ['21485', '21472', '21486', '']
     data = {}
     with open('speeds_without_zero.csv', 'r') as f:
         for line in f.readlines()[1:]:
-            line_elements = line.replace('\n','').split(',')
+            line_elements = line.replace('\n', '').split(',')
             if line_elements[0] in points:
+                print line_elements[0]
                 data[line_elements[0]] = line_elements[1:]
 
     with open('test.txt', 'a+') as f:

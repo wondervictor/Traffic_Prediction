@@ -20,13 +20,31 @@ def initialize(settings, num, **kwargs):
     settings.pool_size = sys.maxint
     #settings.input_types = dense_vector(NODE_NUM)
     # for
+    inputs = {}
     for i in range(num):
         key = 'data_%s' % i
-        settings.input_types[key] = integer_value_sequence(12)
-    settings.input_types['label'] = integer_value(2)
+        inputs[key] = integer_value_sequence(12)
+    inputs['label'] = integer_value(1)
+
+    settings.input_types = inputs
+    # for i in range(num):
+    #     key = 'data_%s' % i
+    #
+    #     settings.input_types[key] = integer_value_sequence(12)
+    # settings.input_types['label'] = integer_value(1)#dense_vector(4)
 
 TERM_SIZE = 12
-NODE_NUM = 4
+NODE_NUM = 3
+
+def get_label_value(raw):
+    if raw == 1 or raw == 0:
+        return [0, 0, 0, 1]
+    elif raw == 2:
+        return [0, 0, 1, 0]
+    elif raw == 3:
+        return [0, 1, 0, 0]
+    elif raw == 4:
+        return [1, 0, 0, 0]
 
 @provider(init_hook=initialize, cache=CacheType.CACHE_PASS_IN_MEM)
 def process(settings, filename):
@@ -44,8 +62,9 @@ def process(settings, filename):
             for j in range(NODE_NUM):
                 key = 'data_%s' % i
                 result[key] = data[j][i:i+TERM_SIZE]
-            label = data[0][i+TERM_SIZE+1]
-            result['label'] = label
+            #label_raw_value = data[0][i+TERM_SIZE]
+            #label = get_label_value(label_raw_value)
+            result['label'] = data[0][i+TERM_SIZE]
             yield result
 
 
