@@ -1,5 +1,7 @@
 from paddle.trainer.PyDataProvider2 import *
 import numpy as np
+import sys
+
 
 
 def normalize(x):
@@ -12,34 +14,44 @@ def normalize(x):
     return normalized_nums
 
 
-NODE_NUM = 328
-TERM_NUM = 288
-LABEL_NUM = 328
 
 
-@provider(input_types={
-    'data': dense_vector(NODE_NUM),#dense_vector([NODE_NUM, TERM_NUM], seq_type=SequenceType.SEQUENCE),
-    'label': dense_vector(NODE_NUM)#dense_vector([NODE_NUM, TERM_NUM], seq_type=SequenceType.SEQUENCE),
-    },
-    cache=CacheType.CACHE_PASS_IN_MEM
-)
+def initialize(settings, num, **kwargs):
+    settings.pool_size = sys.maxint
+    #settings.input_types = dense_vector(NODE_NUM)
+    # for
+    for i in range(num):
+        key = 'data_%s' % i
+        settings.input_types[key] = integer_value_sequence(12)
+    settings.input_types['label'] = integer_value(2)
+
+TERM_SIZE = 12
+NODE_NUM = 4
+
+@provider(init_hook=initialize, cache=CacheType.CACHE_PASS_IN_MEM)
 def process(settings, filename):
     with open(filename, 'r') as f:
-        f.next()
-        all_speeds = []
-        for row_num, line in enumerate(f):
-            speeds = map(float, line.rstrip('\r\n').split(",")[1:])
-            all_speeds.append(speeds)
-        end_time = len(all_speeds[1])
+        data = []
+        max_len = 0
+        for line in f.readlines():
+            elements = line.replace('\n', '').split(';')
+            traffic_values = map(int, elements[1].split(','))
+            data.append(traffic_values)
+            max_len = len(traffic_values)
 
-        for i in range(0, end_time-TERM_NUM):
-            speeds = []
-            labels = []
-            for j in range(0, 328):
-                speeds.append(all_speeds[j][i])
-                labels.append(all_speeds[j][i+TERM_NUM])
-            yield {
-                'data': speeds,
-                'label': labels
-            }
+        for i in range(max_len-TERM_SIZE-1):
+            result = {}
+            for j in range(NODE_NUM):
+                key = 'data_%s' % i
+                result[key] = data[j][i:i+TERM_SIZE]
+            label = data[0][i+TERM_SIZE+1]
+            result['label'] = label
+            yield result
+
+
+
+
+
+
+
 

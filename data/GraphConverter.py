@@ -45,10 +45,54 @@ def get_data(filename):
             node[pair[1]] = new_nodes
     return node
 
-node_dict = get_data('graph.csv')
-
-convert(node_dict)
-
+#node_dict = get_data('graph.csv')
+#convert(node_dict)
 
 
+def points_to_point():
+    all_points = {}
 
+    with open('graph.csv', 'r') as f:
+        for line in f.readlines():
+            points = line.replace('\n', '').split(',')
+            point_a = points[0]
+            point_b = points[1]
+
+            if point_a in all_points:
+                __points = all_points[point_a]
+                __points.append(point_b)
+                all_points[point_a] = __points
+            else:
+                all_points[point_a] = [point_b]
+            if point_b in all_points:
+                __points = all_points[point_b]
+                __points.append(point_a)
+                all_points[point_b] = __points
+            else:
+                all_points[point_b] = [point_a]
+
+    with open('Points.txt', 'a+') as f:
+        for key in all_points:
+            line = "%s;" % key
+            line += ','.join(all_points[key])
+            line += '\n'
+            f.write(line)
+
+
+def select_point_to_test():
+    points = ['21485', '21472', '21486', '21472']
+    data = {}
+    with open('speeds_without_zero.csv', 'r') as f:
+        for line in f.readlines()[1:]:
+            line_elements = line.replace('\n','').split(',')
+            if line_elements[0] in points:
+                data[line_elements[0]] = line_elements[1:]
+
+    with open('test.txt', 'a+') as f:
+        for key in data:
+            line = "%s;" % key
+            line += ",".join(data[key])
+            line += '\n'
+            f.write(line)
+
+select_point_to_test()
