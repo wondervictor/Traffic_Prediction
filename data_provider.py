@@ -14,8 +14,6 @@ def normalize(x):
     return normalized_nums
 
 
-
-
 def initialize(settings, num, **kwargs):
     settings.pool_size = sys.maxint
     #settings.input_types = dense_vector(NODE_NUM)
@@ -24,7 +22,9 @@ def initialize(settings, num, **kwargs):
     for i in range(num):
         key = 'data_%s' % i
         inputs[key] = integer_value_sequence(12)
-    inputs['label'] = integer_value(1)
+    inputs['label'] = dense_vector(4)
+
+    #integer_value(1)
 
     settings.input_types = inputs
     # for i in range(num):
@@ -36,6 +36,7 @@ def initialize(settings, num, **kwargs):
 TERM_SIZE = 12
 NODE_NUM = 3
 
+
 def get_label_value(raw):
     if raw == 1 or raw == 0:
         return [0, 0, 0, 1]
@@ -45,6 +46,7 @@ def get_label_value(raw):
         return [0, 1, 0, 0]
     elif raw == 4:
         return [1, 0, 0, 0]
+
 
 @provider(init_hook=initialize, cache=CacheType.CACHE_PASS_IN_MEM)
 def process(settings, filename):
@@ -62,9 +64,10 @@ def process(settings, filename):
             for j in range(NODE_NUM):
                 key = 'data_%s' % i
                 result[key] = data[j][i:i+TERM_SIZE]
-            #label_raw_value = data[0][i+TERM_SIZE]
-            #label = get_label_value(label_raw_value)
-            result['label'] = data[0][i+TERM_SIZE]
+            label_raw_value = data[0][i+TERM_SIZE]
+            label = get_label_value(label_raw_value)
+            result['label'] = label
+            #data[0][i+TERM_SIZE]
             yield result
 
 

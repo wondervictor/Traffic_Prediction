@@ -3,8 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="8ed7c989-f357-43ea-b582-52d7eb1d31ce" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/GraphConverter.py" afterPath="$PROJECT_DIR$/data/GraphConverter.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data_provider.py" afterPath="$PROJECT_DIR$/data_provider.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/train.sh" afterPath="$PROJECT_DIR$/train.sh" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/trainer_config.py" afterPath="$PROJECT_DIR$/trainer_config.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -26,8 +26,8 @@
       <file leaf-file-name="data_provider.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/data_provider.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="720">
-              <caret line="36" column="12" lean-forward="false" selection-start-line="36" selection-start-column="12" selection-end-line="36" selection-end-column="12" />
+            <state relative-caret-position="1380">
+              <caret line="69" column="12" lean-forward="false" selection-start-line="69" selection-start-column="12" selection-end-line="69" selection-end-column="12" />
               <folding>
                 <element signature="e#0#44#0" expanded="true" />
               </folding>
@@ -120,8 +120,8 @@
       <file leaf-file-name="trainer_config.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/trainer_config.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="542">
-              <caret line="40" column="0" lean-forward="true" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
+            <state relative-caret-position="182">
+              <caret line="20" column="0" lean-forward="true" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -525,7 +525,14 @@
       <option name="project" value="LOCAL" />
       <updated>1488013091490</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="LSTM-&gt;fc_layer-&gt;fc_layer-Regression_cost">
+      <created>1488015412282</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1488015412283</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -563,7 +570,8 @@
     <MESSAGE value="run with Full Connected Network" />
     <MESSAGE value="Need improved  cost 700+" />
     <MESSAGE value="New Model &#10;Finish Data Provider" />
-    <option name="LAST_COMMIT_MESSAGE" value="New Model &#10;Finish Data Provider" />
+    <MESSAGE value="LSTM-&gt;fc_layer-&gt;fc_layer-Regression_cost" />
+    <option name="LAST_COMMIT_MESSAGE" value="LSTM-&gt;fc_layer-&gt;fc_layer-Regression_cost" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -803,16 +811,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/DataRegulation.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="15" column="14" lean-forward="false" selection-start-line="15" selection-start-column="14" selection-end-line="15" selection-end-column="14" />
-          <folding>
-            <element signature="e#24#42#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data/GraphConverter.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="382">
@@ -869,10 +867,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/data/DataRegulation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="15" column="14" lean-forward="false" selection-start-line="15" selection-start-column="14" selection-end-line="15" selection-end-column="14" />
+          <folding>
+            <element signature="e#24#42#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/data_provider.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="720">
-          <caret line="36" column="12" lean-forward="false" selection-start-line="36" selection-start-column="12" selection-end-line="36" selection-end-column="12" />
+        <state relative-caret-position="1380">
+          <caret line="69" column="12" lean-forward="false" selection-start-line="69" selection-start-column="12" selection-end-line="69" selection-end-column="12" />
           <folding>
             <element signature="e#0#44#0" expanded="true" />
           </folding>
@@ -881,8 +889,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/trainer_config.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="542">
-          <caret line="40" column="0" lean-forward="true" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
+        <state relative-caret-position="182">
+          <caret line="20" column="0" lean-forward="true" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
           <folding />
         </state>
       </provider>
