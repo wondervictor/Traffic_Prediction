@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8ed7c989-f357-43ea-b582-52d7eb1d31ce" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/test.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data_provider.py" afterPath="$PROJECT_DIR$/data_provider.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/train.sh" afterPath="$PROJECT_DIR$/train.sh" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/trainer_config.py" afterPath="$PROJECT_DIR$/trainer_config.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -532,7 +530,14 @@
       <option name="project" value="LOCAL" />
       <updated>1488015412283</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Ready for test">
+      <created>1488023542804</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1488023542804</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -571,7 +576,8 @@
     <MESSAGE value="Need improved  cost 700+" />
     <MESSAGE value="New Model &#10;Finish Data Provider" />
     <MESSAGE value="LSTM-&gt;fc_layer-&gt;fc_layer-Regression_cost" />
-    <option name="LAST_COMMIT_MESSAGE" value="LSTM-&gt;fc_layer-&gt;fc_layer-Regression_cost" />
+    <MESSAGE value="Ready for test" />
+    <option name="LAST_COMMIT_MESSAGE" value="Ready for test" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
