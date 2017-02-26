@@ -36,15 +36,19 @@ def normalize(x):
 TERM_SIZE = 12
 NODE_NUM = 3
 
-
-def initialize(settings, num, **kwargs):
-    input_types = []
-    for i in range(num):
-        input_types.append(dense_vector(12))
-    input_types.append(dense_vector(4))
-    settings.input_types = input_types
-
-
+#
+# def initialize(settings, num, **kwargs):
+#     input_types = []
+#     for i in range(num):
+#     #     key = 'data_%s' % i
+#     #     input_types[key] = dense_vector(12)
+#     # input_types['label'] = integer_value(4)
+#     # settings.input_types=input_types
+#         input_types.append(dense_vector(12))
+#     input_types.append(integer_value(4))
+#     settings.input_types = input_types
+#
+#
 def get_label_value(raw):
     if raw == 1 or raw == 0:
         return [0, 0, 0, 1]
@@ -56,23 +60,59 @@ def get_label_value(raw):
         return [1, 0, 0, 0]
 
 
-@provider(init_hook=initialize)
+#
+# @provider(input_types={
+#     'data_0': dense_vector(12),
+#     'data_1': dense_vector(12),
+#     'data_2': dense_vector(12),
+#     'label': integer_value(4)
+# })
+# def process(settings, filename):
+#     with open(filename, 'r') as f:
+#         s = f.readlines()[1]
+#         element = s.replace('\n', '').split(';')[1]
+#         speeds = map(int, element.split(','))
+#         lens = len(speeds)
+#         for i in range(lens-1-12-12):
+#             #print speeds[i:i+TERM_SIZE]
+#             #yield [x/2 for x in range(12)], 2
+#             yield speeds[i:i+TERM_SIZE], speeds[i+1:i+1+TERM_SIZE], speeds[i+2:i+2+TERM_SIZE], speeds[i+2+TERM_SIZE]
+#             # yield {
+#             #     'data': speeds[i:i+TERM_SIZE],
+#             #     'label': speeds[i+TERM_SIZE]
+#             # }
+#
+
+
+@provider(input_types={
+    'data_0': dense_vector_sequence(12),
+    'data_1': dense_vector_sequence(12),
+    'data_2': dense_vector_sequence(12),
+    'label':  integer_value(4)
+})
 def process(settings, filename):
     with open(filename, 'r') as f:
         data = []
         max_len = 0
         for line in f.readlines():
             element = line.replace('\n', '').split(';')[1]
-            speeds = map(float, element.split(','))
+            speeds = map(int, element.split(','))
             data.append(speeds)
             max_len = len(speeds)
 
         for i in range(max_len-TERM_SIZE-1):
             result = []
             for j in range(NODE_NUM):
-                result.append(data[j][i:i+TERM_SIZE])
-            result.append(get_label_value(data[0][i+TERM_SIZE]))
-            yield result
+                result.append([data[j][k] for k in range(i, i+TERM_SIZE)])
+            if data[1][i+TERM_SIZE] == 0:
+                continue
+            yield {
+                'data_0': [[data[0][k] for k in range(i, i+TERM_SIZE)]],
+                'data_1': [[data[1][k] for k in range(i, i+TERM_SIZE)]],
+                'data_2': [[data[2][k] for k in range(i, i+TERM_SIZE)]],
+                'label': data[1][i+TERM_SIZE]
+            }
+
 
 # @provider(input_types={
 #     'data': dense_vector(12),
