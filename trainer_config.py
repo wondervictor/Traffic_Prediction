@@ -21,14 +21,6 @@ settings(
 )
 
 
-# data = data_layer(name='data', size=12)
-# label = data_layer(name='label', size=4)
-#
-# fc_1_layer = fc_layer(input=data, size=24, act=SigmoidActivation())
-# output_layer = fc_layer(input=fc_1_layer, size=4, act=SoftmaxActivation())
-# cost = classification_cost(input=output_layer, label=label)
-# outputs(cost)
-
 
 NODE_NUM = 3
 TERM_SIZE = 12
@@ -42,7 +34,8 @@ label = data_layer(name='label', size=4)
 
 lstm_1_outputs = []
 lstm_pool_outputs = []
-#fc_1_layer_output = []
+param_attr = ParameterAttribute()
+layer_attr = ExtraLayerAttribute(drop_rate=0.2)
 
 for data in inputs_data:
     lstm_data_1_layer = lstmemory(input=data, act=ReluActivation())
@@ -52,7 +45,6 @@ for data in inputs_data:
 
 fc_hidden1 = fc_layer(input=inputs_data, size=NODE_NUM, act=ReluActivation())
 fc_hidden2 = fc_layer(input=fc_hidden1, size=NODE_NUM*NODE_NUM, act=ReluActivation())
-
 sim_lstm = simple_lstm(input=fc_hidden2, size=TERM_SIZE, act=ReluActivation())
 fc_hidden_pool = pooling_layer(input=sim_lstm, pooling_type=SumPooling())
 
@@ -60,15 +52,23 @@ fc_hidden_pool = pooling_layer(input=sim_lstm, pooling_type=SumPooling())
 hidden1 = fc_layer(input=lstm_pool_outputs, size=NODE_NUM, act=ReluActivation())
 hidden2 = fc_layer(input=hidden1, size=NODE_NUM*NODE_NUM, act=ReluActivation())
 hidden3 = fc_layer(input=hidden2, size=TERM_SIZE, act=ReluActivation())
+
+input_important_data = inputs_data[1]
+
+rnn = recurrent_layer(input=input_important_data, act=ReluActivation())
 lstm_fc_layers = []
+rnn_pool = pooling_layer(input=rnn, pooling_type=AvgPooling())
+
 
 for data in lstm_1_outputs:
     fc_1_layer = fc_layer(input=data, size=TERM_SIZE, act=TanhActivation())
     lstm_fc_layers.append(fc_1_layer)
 
-all_layer = fc_layer(input=lstm_fc_layers, size=TERM_SIZE, act=SigmoidActivation())
+all_layer_1 = fc_layer(input=lstm_fc_layers, size=TERM_SIZE*NODE_NUM, act=ReluActivation())
+all_layer_2 = fc_layer(input=all_layer_1, size=TERM_SIZE*TERM_SIZE, act=ReluActivation())
+all_layer = fc_layer(input=all_layer_2, size=TERM_SIZE, act=ReluActivation())
 
-hidden_4 = fc_layer(input=[all_layer,hidden3,fc_hidden_pool], size=TERM_SIZE, act=ReluActivation())
+hidden_4 = fc_layer(input=[rnn_pool, all_layer, hidden3, fc_hidden_pool], size=TERM_SIZE, act=ReluActivation())
 
 outLayer = fc_layer(input=hidden_4, size=4, act=SoftmaxActivation())
 

@@ -3,10 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="8ed7c989-f357-43ea-b582-52d7eb1d31ce" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/GraphConverter.py" afterPath="$PROJECT_DIR$/data/GraphConverter.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/test.txt" afterPath="$PROJECT_DIR$/data/test.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data_provider.py" afterPath="$PROJECT_DIR$/data_provider.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/train.sh" afterPath="$PROJECT_DIR$/train.sh" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/trainer_config.py" afterPath="$PROJECT_DIR$/trainer_config.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -110,14 +106,9 @@
       <file leaf-file-name="trainer_config.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/trainer_config.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1020">
-              <caret line="61" column="0" lean-forward="false" selection-start-line="61" selection-start-column="0" selection-end-line="61" selection-end-column="0" />
-              <folding>
-                <element signature="e#247#271#0" expanded="false" />
-                <element signature="e#441#482#0" expanded="false" />
-                <element signature="e#831#911#0" expanded="false" />
-                <marker date="1488089921000" expanded="false" signature="3892:3992" ph="..." />
-              </folding>
+            <state relative-caret-position="380">
+              <caret line="22" column="0" lean-forward="true" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -559,14 +550,21 @@
       <option name="project" value="LOCAL" />
       <updated>1488041192937</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="new structure">
+      <created>1488089934874</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1488089934874</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27825466" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27825466" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32891566" sideWeight="0.5028612" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -600,7 +598,8 @@
     <MESSAGE value="LSTM-&gt;fc_layer-&gt;fc_layer-Regression_cost" />
     <MESSAGE value="Ready for test" />
     <MESSAGE value="redesign" />
-    <option name="LAST_COMMIT_MESSAGE" value="redesign" />
+    <MESSAGE value="new structure" />
+    <option name="LAST_COMMIT_MESSAGE" value="new structure" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -663,12 +662,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="140">
           <caret line="7" column="0" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="9" selection-end-column="7" />
-          <folding>
-            <element signature="e#247#271#0" expanded="false" />
-            <element signature="e#441#482#0" expanded="false" />
-            <element signature="e#831#911#0" expanded="false" />
-            <marker date="1488089921000" expanded="false" signature="3892:3992" ph="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -748,12 +742,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="360">
           <caret line="18" column="0" lean-forward="false" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
-          <folding>
-            <element signature="e#247#271#0" expanded="false" />
-            <element signature="e#441#482#0" expanded="false" />
-            <element signature="e#831#911#0" expanded="false" />
-            <marker date="1488089921000" expanded="false" signature="3892:3992" ph="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -824,12 +813,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="360">
           <caret line="18" column="1" lean-forward="false" selection-start-line="18" selection-start-column="1" selection-end-line="18" selection-end-column="1" />
-          <folding>
-            <element signature="e#247#271#0" expanded="false" />
-            <element signature="e#441#482#0" expanded="false" />
-            <element signature="e#831#911#0" expanded="false" />
-            <marker date="1488089921000" expanded="false" signature="3892:3992" ph="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1012,14 +996,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/trainer_config.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1020">
-          <caret line="61" column="0" lean-forward="false" selection-start-line="61" selection-start-column="0" selection-end-line="61" selection-end-column="0" />
-          <folding>
-            <element signature="e#247#271#0" expanded="false" />
-            <element signature="e#441#482#0" expanded="false" />
-            <element signature="e#831#911#0" expanded="false" />
-            <marker date="1488089921000" expanded="false" signature="3892:3992" ph="..." />
-          </folding>
+        <state relative-caret-position="380">
+          <caret line="22" column="0" lean-forward="true" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
