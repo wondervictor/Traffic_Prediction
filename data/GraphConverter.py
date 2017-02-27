@@ -81,8 +81,7 @@ def points_to_point():
             f.write(line)
 
 
-def select_point_to_test():
-    points = [27461, 23786, 22804, 20875, 20919, 23834, 27607]
+def select_point_to_test(points, point_name):
     data = {}
     with open('speeds_without_zero.csv', 'r') as f:
         for line in f.readlines()[1:]:
@@ -91,12 +90,8 @@ def select_point_to_test():
                 print line_elements[0]
                 data[line_elements[0]] = line_elements[1:]
 
-    with open('test.txt', 'a+') as f:
+    with open('data/%s.txt' % point_name, 'a+') as f:
         for key in data:
-            # line = "%s;" % key
-
             line = ",".join(['%s' % i for i in data[key]])
             line += '\n'
             f.write(line)
-
-select_point_to_test()
