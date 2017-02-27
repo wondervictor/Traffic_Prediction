@@ -53,14 +53,20 @@ for out in lstm_1_layer_outputs:
     lstm_1_last_pools.append(last)
 
 # 1 - lstm - output
-lstm_1_outputs = [lstm_1_last_pools, lstm_1_avg_pools]
+lstm_1_outputs = []#[lstm_1_last_pools, lstm_1_avg_pools]
+lstm_1_outputs.extend(lstm_1_last_pools)
+lstm_1_outputs.extend(lstm_1_avg_pools)
+
 
 # 1 - fc
 fc_1_1_layer = fc_layer(input=lstm_1_outputs, size=TERM_SIZE, act=SigmoidActivation())
 fc_1_2_layer = fc_layer(input=fc_1_1_layer, size=TERM_SIZE*NODE_NUM, act=ReluActivation())
 
 # 1 all layers output
-all_1_layers = [lstm_1_last_pools, fc_1_2_layer]
+
+all_1_layers = [] #[lstm_1_last_pools, fc_1_2_layer]
+all_1_layers.extend(lstm_1_avg_pools)
+all_1_layers.append(fc_1_2_layer)
 
 
 # 2 - fc
