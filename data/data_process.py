@@ -9,5 +9,6 @@ def split_dataset():
             line = line.rstrip('\n\r').split(';')
             title = int(line[0])
             values = map(int, line[1].split(','))
-            values.append(title)
             select_point_to_test(values, title)
+
+split_dataset()

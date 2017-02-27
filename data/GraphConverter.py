@@ -86,12 +86,17 @@ def select_point_to_test(points, point_name):
     with open('speeds_without_zero.csv', 'r') as f:
         for line in f.readlines()[1:]:
             line_elements = map(int, line.replace('\n', '').split(','))
-            if line_elements[0] in points:
-                print line_elements[0]
+            if line_elements[0] in points or line_elements[0] == point_name:
+                print '---> %s' % line_elements[0]
                 data[line_elements[0]] = line_elements[1:]
 
-    with open('data/%s.txt' % point_name, 'a+') as f:
-        for key in data:
+    with open('speed_data/%s.txt' % point_name, 'a+') as f:
+        line = ",".join(['%s' % i for i in data[point_name]])
+        line += '\n'
+        f.write(line)
+        print '<----%s---->' % point_name
+        for key in points:
             line = ",".join(['%s' % i for i in data[key]])
             line += '\n'
             f.write(line)
+            print key
