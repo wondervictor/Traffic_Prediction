@@ -60,13 +60,15 @@ def points_to_point():
 
             if point_a in all_points:
                 __points = all_points[point_a]
-                __points.append(point_b)
+                if point_b not in __points:
+                    __points.append(point_b)
                 all_points[point_a] = __points
             else:
                 all_points[point_a] = [point_b]
             if point_b in all_points:
                 __points = all_points[point_b]
-                __points.append(point_a)
+                if point_a not in __points:
+                    __points.append(point_a)
                 all_points[point_b] = __points
             else:
                 all_points[point_b] = [point_a]
@@ -80,11 +82,11 @@ def points_to_point():
 
 
 def select_point_to_test():
-    points = ['21485', '21472', '21486']
+    points = [27295, 23864, 23216, 27294, 27292, 27276, 27303, 27431 ,27293, 36534]
     data = {}
     with open('speeds_without_zero.csv', 'r') as f:
         for line in f.readlines()[1:]:
-            line_elements = line.replace('\n', '').split(',')
+            line_elements = map(int, line.replace('\n', '').split(','))
             if line_elements[0] in points:
                 print line_elements[0]
                 data[line_elements[0]] = line_elements[1:]
@@ -92,7 +94,8 @@ def select_point_to_test():
     with open('test.txt', 'a+') as f:
         for key in data:
             line = "%s;" % key
-            line += ",".join(data[key])
+
+            line += ",".join(['%s' % i for i in data[key]])
             line += '\n'
             f.write(line)
 

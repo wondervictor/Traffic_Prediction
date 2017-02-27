@@ -34,7 +34,7 @@ def normalize(x):
 #     # settings.input_types['label'] = integer_value(1)#dense_vector(4)
 
 TERM_SIZE = 12
-NODE_NUM = 3
+NODE_NUM = 10
 
 #
 # def initialize(settings, num, **kwargs):
@@ -88,8 +88,15 @@ def get_label_value(raw):
     'data_0': dense_vector_sequence(12),
     'data_1': dense_vector_sequence(12),
     'data_2': dense_vector_sequence(12),
+    'data_3': dense_vector_sequence(12),
+    'data_4': dense_vector_sequence(12),
+    'data_5': dense_vector_sequence(12),
+    'data_6': dense_vector_sequence(12),
+    'data_7': dense_vector_sequence(12),
+    'data_8': dense_vector_sequence(12),
+    'data_9': dense_vector_sequence(12),
     'label':  integer_value(4)
-})
+}, cache=CacheType.CACHE_PASS_IN_MEM)
 def process(settings, filename):
     with open(filename, 'r') as f:
         data = []
@@ -104,13 +111,20 @@ def process(settings, filename):
             result = []
             for j in range(NODE_NUM):
                 result.append([data[j][k] for k in range(i, i+TERM_SIZE)])
-            if data[1][i+TERM_SIZE] == 0:
+            if data[2][i+TERM_SIZE] == 0:
                 continue
             yield {
-                'data_0': [[data[0][k] for k in range(i, i+TERM_SIZE)]],
-                'data_1': [[data[1][k] for k in range(i, i+TERM_SIZE)]],
-                'data_2': [[data[2][k] for k in range(i, i+TERM_SIZE)]],
-                'label': data[1][i+TERM_SIZE]
+                'data_0': [[data[0][k] for k in range(i, i + TERM_SIZE)]],
+                'data_1': [[data[1][k] for k in range(i, i + TERM_SIZE)]],
+                'data_2': [[data[2][k] for k in range(i, i + TERM_SIZE)]],
+                'data_3': [[data[3][k] for k in range(i, i + TERM_SIZE)]],
+                'data_4': [[data[4][k] for k in range(i, i + TERM_SIZE)]],
+                'data_5': [[data[5][k] for k in range(i, i + TERM_SIZE)]],
+                'data_6': [[data[6][k] for k in range(i, i + TERM_SIZE)]],
+                'data_7': [[data[7][k] for k in range(i, i + TERM_SIZE)]],
+                'data_8': [[data[8][k] for k in range(i, i + TERM_SIZE)]],
+                'data_9': [[data[9][k] for k in range(i, i + TERM_SIZE)]],
+                'label': data[2][i + TERM_SIZE]
             }
 
 

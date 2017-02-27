@@ -1,4 +1,5 @@
 from paddle.trainer_config_helpers import *
+
 is_predict = get_config_arg('is_predict', bool, False)
 
 define_py_data_sources2(
@@ -11,18 +12,17 @@ define_py_data_sources2(
     # }
 )
 
-batch_size = 288
+batch_size = 72
 
 settings(
     batch_size=batch_size,
-    learning_rate=0.01,
+    learning_rate=0.0001,
     learning_method=RMSPropOptimizer(),
     regularization=L2Regularization(8e-4)
 )
 
-NODE_NUM = 3
+NODE_NUM = 10
 TERM_SIZE = 12
-
 
 # input
 input_data = []
@@ -41,10 +41,10 @@ for data in input_data:
 # 1 - pool
 
 # 1 - pool - avg
-lstm_1_avg_pools = []
-for out in lstm_1_layer_outputs:
-    avg = pooling_layer(input=out, pooling_type=AvgPooling())
-    lstm_1_avg_pools.append(avg)
+# lstm_1_avg_pools = []
+# for out in lstm_1_layer_outputs:
+#     avg = pooling_layer(input=out, pooling_type=AvgPooling())
+#     lstm_1_avg_pools.append(avg)
 
 # 1 - pool - last
 lstm_1_last_pools = []
@@ -55,23 +55,23 @@ for out in lstm_1_layer_outputs:
 # 1 - lstm - output
 lstm_1_outputs = []#[lstm_1_last_pools, lstm_1_avg_pools]
 lstm_1_outputs.extend(lstm_1_last_pools)
-lstm_1_outputs.extend(lstm_1_avg_pools)
+# lstm_1_outputs.extend(lstm_1_avg_pools)
 
 
 # 1 - fc
-fc_1_1_layer = fc_layer(input=lstm_1_outputs, size=TERM_SIZE, act=SigmoidActivation())
+fc_1_1_layer = fc_layer(input=lstm_1_outputs, size=TERM_SIZE, act=ReluActivation())
 fc_1_2_layer = fc_layer(input=fc_1_1_layer, size=TERM_SIZE*NODE_NUM, act=ReluActivation())
 
 # 1 all layers output
 
 all_1_layers = [] #[lstm_1_last_pools, fc_1_2_layer]
-all_1_layers.extend(lstm_1_avg_pools)
+# all_1_layers.extend(lstm_1_avg_pools)
 all_1_layers.append(fc_1_2_layer)
 
 
 # 2 - fc
 fc_2_1_layer = fc_layer(input=input_data, size=TERM_SIZE, act=ReluActivation())
-fc_2_2_layer = fc_layer(input=fc_2_1_layer, size=TERM_SIZE*NODE_NUM, act=TanhActivation())
+fc_2_2_layer = fc_layer(input=fc_2_1_layer, size=TERM_SIZE*NODE_NUM, act=ReluActivation())
 
 # 2 - simple lstm
 simple_2_1_lstm = simple_lstm(input=fc_2_2_layer, size=TERM_SIZE*NODE_NUM, act=ReluActivation())
@@ -86,19 +86,16 @@ simple_2_2_lstm = simple_lstm(input=fc_2_3_layer, size=TERM_SIZE, act=ReluActiva
 last_2_pool = last_seq(input=simple_2_2_lstm)
 
 # all 2 layers output
-
 all_2_layers = last_2_pool
 
 all_ouputs = []
 all_ouputs.extend(all_1_layers)
 all_ouputs.append(all_2_layers)
+all_ouputs.extend(lstm_1_last_pools)
 
 all_fc_1_layer = fc_layer(input=all_ouputs, size=TERM_SIZE, act=ReluActivation())
-
 output_layer = fc_layer(input=all_fc_1_layer, size=4, act=SoftmaxActivation())
-
 cost = classification_cost(input=output_layer, label=label)
-
 outputs(cost)
 
 
