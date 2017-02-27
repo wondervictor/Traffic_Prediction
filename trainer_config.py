@@ -21,7 +21,7 @@ settings(
     regularization=L2Regularization(8e-4)
 )
 
-NODE_NUM = 10
+NODE_NUM = 7
 TERM_SIZE = 12
 
 # input
@@ -31,6 +31,17 @@ for i in range(NODE_NUM):
     input_data.append(data_layer(name=key, size=TERM_SIZE))
 # label
 label = data_layer(name='label', size=4)
+
+# 0 - LSTM for one point
+center_data = input_data[0]
+
+# 0 - LSTM
+
+lstm_0_layer = lstmemory(input=center_data, act=ReluActivation())
+
+lstm_0_last_pool = last_seq(input=lstm_0_layer)
+
+
 
 # 1 - LSTM
 lstm_1_layer_outputs = []
@@ -92,6 +103,7 @@ all_ouputs = []
 all_ouputs.extend(all_1_layers)
 all_ouputs.append(all_2_layers)
 all_ouputs.extend(lstm_1_last_pools)
+all_ouputs.append(lstm_0_last_pool)
 
 all_fc_1_layer = fc_layer(input=all_ouputs, size=TERM_SIZE, act=ReluActivation())
 output_layer = fc_layer(input=all_fc_1_layer, size=4, act=SoftmaxActivation())
