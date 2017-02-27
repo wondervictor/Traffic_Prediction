@@ -90,3 +90,8 @@ ENV/
 
 # Pycharm Files
 .idea/
+
+# Train Files
+output/
+train.log
+
