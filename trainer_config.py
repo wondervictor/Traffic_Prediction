@@ -2,6 +2,10 @@ from paddle.trainer_config_helpers import *
 
 is_predict = get_config_arg('is_predict', bool, False)
 
+# if not is_predict:
+#     pass
+
+
 define_py_data_sources2(
     train_list='data/train.list',
     test_list='data/test.list',
@@ -21,8 +25,12 @@ settings(
     regularization=L2Regularization(8e-4)
 )
 
-NODE_NUM = 7
+
+
+
 TERM_SIZE = 12
+INPUT_SIZE =1276
+NODE_NUM = 328
 
 # input
 input_data = []
@@ -30,7 +38,7 @@ for i in range(NODE_NUM):
     key = "data_%s" % i
     input_data.append(data_layer(name=key, size=TERM_SIZE))
 # label
-label = data_layer(name='label', size=4)
+label = data_layer(name='label_0', size=4)
 
 # 0 - LSTM for one point
 center_data = input_data[0]

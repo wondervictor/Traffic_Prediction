@@ -100,3 +100,60 @@ def select_point_to_test(points, point_name):
             line += '\n'
             f.write(line)
             print key
+
+
+def get_points_count():
+    num = 0
+    with open('Points.txt', 'r') as f:
+        for line in f.readlines():
+            one = line.rstrip('\n\r').split(';')
+            num += 1
+            elements = map(int, one[1].split(','))
+            num += len(elements)
+
+    print num
+
+
+# get_points_count()
+
+
+def get_points_distribution_list():
+    nums = []
+    with open('Points.txt', 'r') as f:
+        for line in f.readlines():
+            line = line.rstrip('\n\r').split(';')
+            point = int(line[0])
+            points = line[1].split(',')
+            nums.append(len(points)+1)
+
+#    return nums
+    with open('point_count.txt', 'a+') as f:
+        counts = ['%s' % i for i in nums]
+        line = ','.join(counts)
+        f.write(line)
+
+
+#get_points_distribution_list()
+
+def counts():
+    counts = 0
+    with open('point_count.txt', 'r') as f:
+        s = f.next()
+        nums = map(int, s.rstrip('\n\r').split(','))
+        for i in nums:
+            counts += i
+        #print len(s.rstrip('\n\r').split(','))
+        print counts
+
+def add_test_files():
+    file_name = []
+    with open('Points.txt', 'r') as f:
+        for line in f.readlines():
+            one = line.rstrip('\n\r').split(';')[0]
+            file_name.append('%s.txt' % one)
+    with open('train.list', 'a+') as f:
+        for one in file_name:
+            line = 'data/speed_data/%s\n' % one
+            f.write(line)
+
+add_test_files()
