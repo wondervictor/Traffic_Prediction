@@ -1,6 +1,9 @@
 from paddle.trainer_config_helpers import *
 
 is_predict = get_config_arg('is_predict', bool, False)
+num = get_config_arg('num', int, 0)
+point = get_config_arg('point', int, 0)
+
 
 # if not is_predict:
 #     pass
@@ -10,10 +13,11 @@ define_py_data_sources2(
     train_list='data/train.list',
     test_list='data/test.list',
     module='data_provider',
-    obj='process'
-    # args={
-    #     'num': 3
-    # }
+    obj='process',
+    args={
+        'num': num,
+        'file_name': point,
+    }
 )
 
 batch_size = 72
@@ -29,8 +33,8 @@ settings(
 
 
 TERM_SIZE = 12
-INPUT_SIZE =1276
-NODE_NUM = 328
+#INPUT_SIZE =1276
+NODE_NUM = num
 
 # input
 input_data = []
@@ -38,7 +42,7 @@ for i in range(NODE_NUM):
     key = "data_%s" % i
     input_data.append(data_layer(name=key, size=TERM_SIZE))
 # label
-label = data_layer(name='label_0', size=4)
+label = data_layer(name='label', size=4)
 
 # 0 - LSTM for one point
 center_data = input_data[0]
@@ -116,6 +120,7 @@ all_ouputs.append(lstm_0_last_pool)
 all_fc_1_layer = fc_layer(input=all_ouputs, size=TERM_SIZE, act=ReluActivation())
 output_layer = fc_layer(input=all_fc_1_layer, size=4, act=SoftmaxActivation())
 cost = classification_cost(input=output_layer, label=label)
+
 outputs(cost)
 
 

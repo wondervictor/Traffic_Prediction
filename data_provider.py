@@ -1,6 +1,5 @@
 from paddle.trainer.PyDataProvider2 import *
-import numpy as np
-import sys
+import re
 
 
 
@@ -33,13 +32,15 @@ def normalize(x):
 #     # settings.input_types['label'] = integer_value(1)#dense_vector(4)
 
 TERM_SIZE = 12
-#NODE_NUM = 10
-INPUT_SIZE = 1276
-NODE_NUM = 328
+# #NODE_NUM = 10
+# INPUT_SIZE = 1276
+# NODE_NUM = 328
 
 
-def initialize(settings, num, **kwargs):
+def initialize(settings, num, file_name, **kwargs):
     s = dict()
+    settings.file_name = file_name
+    settings.num = num
     for i in range(num):
         key = 'data_%s' % i
         s[key] = dense_vector_sequence(12)
@@ -98,20 +99,39 @@ def get_label_value(raw):
 # }, cache=CacheType.CACHE_PASS_IN_MEM)
 @provider(init_hook=initialize,cache=CacheType.CACHE_PASS_IN_MEM)
 def process(settings, filename):
-    data_set = []
-    files = []
-    with open(filename, 'r') as f:
-        files = f.readlines()
-    for file_name in files:
-        data = []
-        pattern = ''
-        # settings.data_name =
-        with open(file_name, 'r') as f:
-            for line in f.readlines():
-                element = line.replace('\n', '').split(';')[1]
-                speeds = map(int, line.rstrip('\n').split(','))
-                data.append(speeds)
-                max_len = len(speeds)
+    data = []
+    # with open(filename, 'r') as f:
+    #     files = f.readlines()
+    max_len = 0
+    node_num = settings.num
+    file_name = 'data/speed_data/%s.txt' % settings.file_name
+    with open(file_name, 'r') as f:
+        for line in f.readlines():
+            speeds = map(int, line.rstrip('\n').split(','))
+            data.append(speeds)
+            max_len = len(speeds)
+    for i in range(max_len-TERM_SIZE-1):
+        result = dict()
+        label = data[0][i + TERM_SIZE] - 1
+        if label == -1:
+            continue
+        for j in range(node_num):
+            key = 'data_%s' % j
+            result[key] = [[data[j][k]-1 for k in range(i, i + TERM_SIZE)]]
+        result['label'] = label
+        yield result
+
+
+
+    # for file_name in files:
+    #     file_name = file_name.rstrip('\n\r')
+    #     data = []
+    #     with open(file_name, 'r') as f:
+    #         for line in f.readlines():
+    #             element = line.replace('\n', '').split(';')[1]
+    #             speeds = map(int, line.rstrip('\n').split(','))
+    #             data.append(speeds)
+    #             max_len = len(speeds)
 
 
 

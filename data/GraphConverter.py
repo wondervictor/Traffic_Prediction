@@ -119,21 +119,27 @@ def get_points_count():
 
 def get_points_distribution_list():
     nums = []
+    center_point = []
     with open('Points.txt', 'r') as f:
         for line in f.readlines():
             line = line.rstrip('\n\r').split(';')
             point = int(line[0])
             points = line[1].split(',')
             nums.append(len(points)+1)
+            center_point.append(point)
+
+
 
 #    return nums
     with open('point_count.txt', 'a+') as f:
-        counts = ['%s' % i for i in nums]
-        line = ','.join(counts)
-        f.write(line)
+        for i in range(328):
+            line = '%s ' % center_point[i]
+            line += '%s\n' % nums[i]
+            f.write(line)
 
 
-#get_points_distribution_list()
+
+get_points_distribution_list()
 
 def counts():
     counts = 0
@@ -150,10 +156,11 @@ def add_test_files():
     with open('Points.txt', 'r') as f:
         for line in f.readlines():
             one = line.rstrip('\n\r').split(';')[0]
-            file_name.append('%s.txt' % one)
-    with open('train.list', 'a+') as f:
+            file_name.append('%s' % one)
+
+    with open('point_list.txt', 'a+') as f:
         for one in file_name:
-            line = 'data/speed_data/%s\n' % one
+            line = '%s\n' % one
             f.write(line)
 
-add_test_files()
+# add_test_files()
