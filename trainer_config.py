@@ -16,7 +16,7 @@ define_py_data_sources2(
     obj='process',
     args={
         'num': num,
-        'file_name': point,
+        'point': point,
     }
 )
 
@@ -119,7 +119,7 @@ all_ouputs.append(lstm_0_last_pool)
 
 all_fc_1_layer = fc_layer(input=all_ouputs, size=TERM_SIZE, act=ReluActivation())
 output_layer = fc_layer(input=all_fc_1_layer, size=4, act=SoftmaxActivation())
-cost = classification_cost(input=output_layer, label=label)
+cost = classification_cost(name='<---- cost %s --->' % point,input=output_layer, label=label)
 
 outputs(cost)
 

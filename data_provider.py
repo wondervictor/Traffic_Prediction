@@ -37,9 +37,9 @@ TERM_SIZE = 12
 # NODE_NUM = 328
 
 
-def initialize(settings, num, file_name, **kwargs):
+def initialize(settings, num, point, **kwargs):
     s = dict()
-    settings.file_name = file_name
+    settings.point = point
     settings.num = num
     for i in range(num):
         key = 'data_%s' % i
@@ -104,7 +104,8 @@ def process(settings, filename):
     #     files = f.readlines()
     max_len = 0
     node_num = settings.num
-    file_name = 'data/speed_data/%s.txt' % settings.file_name
+    file_name = 'data/speed_data/%s.txt' % settings.point
+    print file_name
     with open(file_name, 'r') as f:
         for line in f.readlines():
             speeds = map(int, line.rstrip('\n').split(','))

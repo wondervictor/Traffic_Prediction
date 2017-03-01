@@ -27,10 +27,10 @@ do
     paddle train \
     --config=$cfg \
     --save_dir=$output_dir \
-    --trainer_count=2 \
+    --trainer_count=32 \
     --log_period=1000 \
     --dot_period=100 \
-    --num_passes=1000 \
+    --num_passes=200 \
     --use_gpu=false \
     --config_args=num=$num,point=$point \
     --show_parameter_stats_period=3000 \
