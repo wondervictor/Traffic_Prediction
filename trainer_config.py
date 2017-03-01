@@ -4,9 +4,10 @@ is_predict = get_config_arg('is_predict', bool, False)
 num = get_config_arg('num', int, 0)
 point = get_config_arg('point', int, 0)
 
-
-# if not is_predict:
-#     pass
+with open('data/train.list', 'w') as f:
+    f.write('data/speed_data/%s.txt' % point)
+with open('data/test.list', 'w') as f:
+    f.write('data/speed_data/%s.txt' % point)
 
 
 define_py_data_sources2(
@@ -30,10 +31,7 @@ settings(
 )
 
 
-
-
 TERM_SIZE = 12
-#INPUT_SIZE =1276
 NODE_NUM = num
 
 # input

@@ -1,7 +1,6 @@
 from paddle.trainer.PyDataProvider2 import *
 import re
-
-
+import logging
 
 def normalize(x):
     max_num = 0
@@ -104,23 +103,23 @@ def process(settings, filename):
     #     files = f.readlines()
     max_len = 0
     node_num = settings.num
-    file_name = 'data/speed_data/%s.txt' % settings.point
-    print file_name
-    with open(file_name, 'r') as f:
+    # file_name = 'data/speed_data/%s.txt' % settings.point
+    # #print file_name
+    with open(filename, 'r') as f:
         for line in f.readlines():
             speeds = map(int, line.rstrip('\n').split(','))
             data.append(speeds)
             max_len = len(speeds)
-    for i in range(max_len-TERM_SIZE-1):
-        result = dict()
-        label = data[0][i + TERM_SIZE] - 1
-        if label == -1:
-            continue
-        for j in range(node_num):
-            key = 'data_%s' % j
-            result[key] = [[data[j][k]-1 for k in range(i, i + TERM_SIZE)]]
-        result['label'] = label
-        yield result
+        for i in range(max_len - TERM_SIZE - 1):
+            result = dict()
+            label = data[0][i + TERM_SIZE] - 1
+            if label == -1:
+                continue
+            for j in range(node_num):
+                key = 'data_%s' % j
+                result[key] = [[data[j][k] - 1 for k in range(i, i + TERM_SIZE)]]
+            result['label'] = label
+            yield result
 
 
 

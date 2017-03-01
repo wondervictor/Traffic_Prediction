@@ -6,7 +6,7 @@ point_list='data/point_count.txt'
 cfg=trainer_config.py
 #paddle train \
 #  --config=$cfg \
-#  --save_dir=./output \
+#  --save_dir=./output/21484/ \
 #  --trainer_count=32 \
 #  --log_period=1000 \
 #  --dot_period=100 \
@@ -15,7 +15,7 @@ cfg=trainer_config.py
 #  --use_gpu=false \
 #  --show_parameter_stats_period=3000 \
 #  2>&1 | tee 'train.log'
-#
+
 
 
 
