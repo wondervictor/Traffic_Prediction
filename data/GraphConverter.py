@@ -102,6 +102,8 @@ def select_point_to_test(points, point_name):
             print key
 
 
+
+
 def get_points_count():
     num = 0
     with open('Points.txt', 'r') as f:
@@ -139,7 +141,7 @@ def get_points_distribution_list():
 
 
 
-get_points_distribution_list()
+# get_points_distribution_list()
 
 def counts():
     counts = 0

@@ -11,4 +11,4 @@ def split_dataset():
             values = map(int, line[1].split(','))
             select_point_to_test(values, title)
 
-# split_dataset()
+split_dataset()

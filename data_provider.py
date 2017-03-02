@@ -30,7 +30,7 @@ def normalize(x):
 #     #     settings.input_types[key] = integer_value_sequence(12)
 #     # settings.input_types['label'] = integer_value(1)#dense_vector(4)
 
-TERM_SIZE = 12
+TERM_SIZE = 24
 # #NODE_NUM = 10
 # INPUT_SIZE = 1276
 # NODE_NUM = 328
@@ -42,8 +42,11 @@ def initialize(settings, num, point, **kwargs):
     settings.num = num
     for i in range(num):
         key = 'data_%s' % i
-        s[key] = dense_vector_sequence(12)
-    s['label'] = integer_value(4)
+        s[key] = dense_vector_sequence(24)
+
+    for i in range(TERM_SIZE):
+        s['label_%s' % i] = integer_value(4)
+
     settings.input_types = s
 
 
@@ -83,19 +86,6 @@ def get_label_value(raw):
 
 
 
-# @provider(input_types={
-#     'data_0': dense_vector_sequence(12),
-#     'data_1': dense_vector_sequence(12),
-#     'data_2': dense_vector_sequence(12),
-#     'data_3': dense_vector_sequence(12),
-#     'data_4': dense_vector_sequence(12),
-#     'data_5': dense_vector_sequence(12),
-#     'data_6': dense_vector_sequence(12),
-#     'data_7': dense_vector_sequence(12),
-#     'data_8': dense_vector_sequence(12),
-#     'data_9': dense_vector_sequence(12),
-#     'label':  integer_value(4)
-# }, cache=CacheType.CACHE_PASS_IN_MEM)
 @provider(init_hook=initialize,cache=CacheType.CACHE_PASS_IN_MEM)
 def process(settings, filename):
     data = []
@@ -110,16 +100,28 @@ def process(settings, filename):
             speeds = map(int, line.rstrip('\n').split(','))
             data.append(speeds)
             max_len = len(speeds)
-        for i in range(max_len - TERM_SIZE - 1):
+        for i in range(max_len - 2*TERM_SIZE - 1):
             result = dict()
-            label = data[0][i + TERM_SIZE] - 1
-            if label == -1:
-                continue
+            # label = data[0][i + TERM_SIZE] - 1
+            # if label == -1:
+            #     continue
             for j in range(node_num):
                 key = 'data_%s' % j
                 result[key] = [[data[j][k] - 1 for k in range(i, i + TERM_SIZE)]]
-            result['label'] = label
+            labels = data[0][i+TERM_SIZE:i+TERM_SIZE*2]
+            if 0 in labels:
+                continue
+            for p in range(TERM_SIZE):
+                key = 'label_%s' % p
+                result[key] = labels[p]-1
             yield result
+
+
+
+
+def predict_initialize(settings, num, point, **kwargs):
+    data = []
+
 
 
 
