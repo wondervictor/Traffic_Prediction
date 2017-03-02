@@ -8,13 +8,18 @@ with open('data/train.list', 'w') as f:
     f.write('data/speed_data/%s.txt' % point)
 with open('data/test.list', 'w') as f:
     f.write('data/speed_data/%s.txt' % point)
+process = 'process'
+if is_predict:
+    with open('data/pred.list', 'w') as f:
+        f.write('data/speed_data/%s.txt' % point)
+    process = 'process_predict'
 
 
 define_py_data_sources2(
     train_list='data/train.list',
     test_list='data/test.list',
     module='data_provider',
-    obj='process',
+    obj=process,
     args={
         'num': num,
         'point': point,
@@ -43,8 +48,6 @@ for i in range(NODE_NUM):
 output = []
 
 for i in range(TERM_SIZE):
-    # label
-    label = data_layer(name='label_%s' % i, size=4)
 
     # 0 - LSTM for one point
     center_data = input_data[0]
@@ -118,8 +121,16 @@ for i in range(TERM_SIZE):
 
     all_fc_1_layer = fc_layer(input=all_ouputs, size=TERM_SIZE, act=ReluActivation())
     output_layer = fc_layer(input=all_fc_1_layer, size=4, act=SoftmaxActivation())
-    cost = classification_cost(name='<---- cost %s -- %s--->' % (point, (i+1)*5), input=output_layer, label=label)
-    output.append(cost)
+
+    if is_predict:
+        maxid = maxid_layer(output_layer)
+        output.append(maxid)
+    else:
+        # label
+        label = data_layer(name='label_%s' % i, size=4)
+        cost = classification_cost(name='<---- cost %s -- %s--->' % (point, (i + 1) * 5), input=output_layer,
+                                   label=label)
+        output.append(cost)
 outputs(output)
 
 
