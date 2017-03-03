@@ -5,9 +5,9 @@ num = get_config_arg('num', int, 0)
 point = get_config_arg('point', int, 0)
 
 with open('data/train.list', 'w') as f:
-    f.write('data/speed_data/%s.txt' % point)
+    f.write('data/speeds_data_short/%s.txt' % point)
 with open('data/test.list', 'w') as f:
-    f.write('data/speed_data/%s.txt' % point)
+    f.write('data/speeds_data_short/%s.txt' % point)
 process = 'process'
 if is_predict:
     with open('data/pred.list', 'w') as f:
@@ -30,7 +30,7 @@ batch_size = 288
 
 settings(
     batch_size=batch_size,
-    learning_rate=0.0001,
+    learning_rate=0.001,
     learning_method=RMSPropOptimizer(),
     regularization=L2Regularization(8e-4)
 )

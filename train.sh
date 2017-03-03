@@ -31,7 +31,7 @@ do
     --log_period=1000 \
     --dot_period=100 \
     --num_passes=50 \
-    --use_gpu=true \
+    --use_gpu=false \
     --config_args=num=$num,point=$point \
     --show_parameter_stats_period=3000 \
     2>&1 | tee 'output/train${point}.log'
