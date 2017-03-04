@@ -90,7 +90,7 @@ def select_point_to_test(points, point_name):
                 print '---> %s' % line_elements[0]
                 data[line_elements[0]] = line_elements[1:]
 
-    with open('predict_1_data/%s.txt' % point_name, 'a+') as f:
+    with open('predict_2_data/%s.txt' % point_name, 'a+') as f:
         line = ",".join(['%s' % i for i in data[point_name]])
         line += '\n'
         f.write(line)
