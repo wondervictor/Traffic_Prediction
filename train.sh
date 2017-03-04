@@ -25,7 +25,7 @@ paddle train \
    --init_model_path=$model \
    --config_args=is_predict=1 \
    --predict_output_dir=1955
-
+   python2.7 generate_result.py 1955 1955/rank-00000
 
 #
 #while read line
