@@ -218,7 +218,7 @@ if is_predict:
 else:
     # label
     label = data_layer(name='label', size=4)
-    cost = classification_cost(name='<---- cost %s -- %s--->' % (point, (i + 1) * 5), input=output_layer,
+    cost = classification_cost(name='<---- cost %s ---->' % point, input=output_layer,
                                label=label)
     outputs(cost)
 

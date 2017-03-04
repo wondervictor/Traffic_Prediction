@@ -15,6 +15,9 @@ if is_predict:
     process = 'process_predict'
 
 
+num = 1
+point = 1955
+
 define_py_data_sources2(
     train_list='data/train.list',
     test_list='data/test.list',
@@ -39,7 +42,7 @@ settings(
 )
 
 
-TERM_SIZE = 24
+TERM_SIZE = 12
 NODE_NUM = num
 
 # input
@@ -218,7 +221,7 @@ if is_predict:
 else:
     # label
     label = data_layer(name='label', size=4)
-    cost = classification_cost(name='<---- cost %s -- %s--->' % (point, (i + 1) * 5), input=output_layer,
+    cost = classification_cost(name='<---- cost --->', input=output_layer,
                                label=label)
     outputs(cost)
 
