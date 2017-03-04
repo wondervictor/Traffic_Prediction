@@ -14,10 +14,15 @@ if is_predict:
         f.write('data/predict_2_data/%s.txt' % point)
     process = 'process_predict'
 
+test = 'data/test.list'
+train = 'data/train.list'
+if is_predict:
+    train = None
+    test = 'data/pred.list'
 
 define_py_data_sources2(
-    train_list='data/train.list',
-    test_list='data/test.list',
+    train_list=train,
+    test_list=test,
     module='data_provider_24',
     obj=process,
     args={

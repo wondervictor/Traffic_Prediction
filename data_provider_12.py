@@ -9,6 +9,8 @@ def predict_initialize(settings, num, point, **kwargs):
     for i in range(num):
         key = 'data_%s' % i
         s[key] = dense_vector_sequence(12)
+    settings.input_types = s
+
 
 @provider(init_hook=predict_initialize, should_shuffle=False)
 def process_predict(settings, filename):

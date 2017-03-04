@@ -83,14 +83,14 @@ def points_to_point():
 
 def select_point_to_test(points, point_name):
     data = {}
-    with open('new_speeds.csv', 'r') as f:
-        for line in f.readlines():
+    with open('speeds_without_zero.csv', 'r') as f:
+        for line in f.readlines()[1:]:
             line_elements = map(int, line.replace('\n', '').split(','))
             if line_elements[0] in points or line_elements[0] == point_name:
                 print '---> %s' % line_elements[0]
                 data[line_elements[0]] = line_elements[1:]
 
-    with open('predict_2_data/%s.txt' % point_name, 'a+') as f:
+    with open('%s.txt' % point_name, 'a+') as f:
         line = ",".join(['%s' % i for i in data[point_name]])
         line += '\n'
         f.write(line)

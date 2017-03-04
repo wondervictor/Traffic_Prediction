@@ -10,7 +10,7 @@ while read line
 do
     point=`echo $line|cut -d " " -f 1`
     num=`echo $line|cut -d " " -f 2`
-    model=output/$point/pass-00100
+    model=output/$point/pass-00150
 
     paddle train \
         --config=$cfg \

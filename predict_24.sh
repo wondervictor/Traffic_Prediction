@@ -10,7 +10,7 @@ while read line
 do
     point=`echo $line|cut -d " " -f 1`
     num=`echo $line|cut -d " " -f 2`
-    model=output/$point/pass-00039
+    model=output/$point/pass-00049
     paddle train \
         --config=$cfg \
         --use_gpu=false \
@@ -18,6 +18,5 @@ do
         --init_model_path=$model \
         --config_args=is_predict=1 \
         --config_args=num=$num,point=$point \
-        --predict_output_dir=./$point
-    #rm -rf rank-00000
+        --predict_output_dir=result/$point
 done < $point_list

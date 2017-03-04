@@ -12,6 +12,10 @@ def split_dataset():
             select_point_to_test(values, title)
 
 
+select_point_to_test([], 1955)
+
+
+
 def find_miss_data():
     all_points = []
     with open('point_count.txt', 'r') as f:
@@ -61,5 +65,4 @@ def get_missing_point():
         for key in missing_points:
             line = '%s %s\n' %(key, data['%s' % key])
             f.write(line)
-
 get_missing_point()
