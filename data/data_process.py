@@ -12,7 +12,7 @@ def split_dataset():
             select_point_to_test(values, title)
 
 
-select_point_to_test([], 1955)
+# select_point_to_test([], 1955)
 
 
 
@@ -65,4 +65,26 @@ def get_missing_point():
         for key in missing_points:
             line = '%s %s\n' %(key, data['%s' % key])
             f.write(line)
-get_missing_point()
+# get_missing_point()
+
+
+
+def get_point():
+    points = []
+    with open('tmp', 'r') as f:
+        s = f.readlines()
+        for i in s:
+            i = map(int, i.rstrip('\r\n').split(' '))[0]
+            points.append(i)
+    point_data = {}
+    with open('point_count.txt', 'r') as f:
+        s = f.readlines()
+        for i in s:
+            i = map(int, i.rstrip('\n\r').split(' '))
+            point_data['%s' % i[0]] = i[1]
+    with open('GPU_count.txt', 'a+') as f:
+        for i in points:
+            line = '%s %s\n' % (i, point_data['%s' % i])
+            f.write(line)
+
+get_point()
