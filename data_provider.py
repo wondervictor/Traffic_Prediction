@@ -117,30 +117,67 @@ def process(settings, filename):
             yield result
 
 
+
+############# 12 Version ###############
+
 def predict_initialize(settings, num, point, **kwargs):
     s = dict()
     settings.point = point
     settings.num = num
     for i in range(num):
         key = 'data_%s' % i
-        s[key] = dense_vector_sequence(24)
+        s[key] = dense_vector_sequence(12)
 
-
-@provider(init_hook=predict_initialize,cache=CacheType.CACHE_PASS_IN_MEM)
+@provider(init_hook=predict_initialize, should_shuffle=False)
 def process_predict(settings, filename):
-    with open(filename,'r') as f:
+    with open(filename, 'r') as f:
         data = []
         max_len = 0
         node_num = settings.num
         result = dict()
         for line in f.readlines():
-            speeds = map(int, line.rstrip('\n').split(','))
+            speeds = map(int, line.rstrip('\n\r').split(','))
             data.append(speeds)
             max_len = len(speeds)
         for i in range(node_num):
             key = 'data_%s' % i
-            result[key] = [[data[i][k] - 1 for k in range(max_len-TERM_SIZE-1, max_len-1)]]
+            result[key] = [[data[i][k] - 1 for k in range(0, 12)]]
         yield result
+
+
+############# 28 Version ###############
+
+# def predict_initialize(settings, num, point, **kwargs):
+#     s = dict()
+#     settings.point = point
+#     settings.num = num
+#     for i in range(num):
+#         key = 'data_%s' % i
+#         s[key] = dense_vector_sequence(24)
+#
+#
+#
+#
+#
+
+# @provider(init_hook=predict_initialize,cache=CacheType.CACHE_PASS_IN_MEM)
+# def process_predict(settings, filename):
+#     with open(filename,'r') as f:
+#         data = []
+#         max_len = 0
+#         node_num = settings.num
+#         result = dict()
+#         for line in f.readlines():
+#             speeds = map(int, line.rstrip('\n').split(','))
+#             data.append(speeds)
+#             max_len = len(speeds)
+#         for i in range(node_num):
+#             key = 'data_%s' % i
+#             result[key] = [[data[i][k] - 1 for k in range(max_len-TERM_SIZE, max_len)]]
+#         yield result
+
+
+
 
 
     # for file_name in files:

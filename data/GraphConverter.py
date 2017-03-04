@@ -90,7 +90,7 @@ def select_point_to_test(points, point_name):
                 print '---> %s' % line_elements[0]
                 data[line_elements[0]] = line_elements[1:]
 
-    with open('speeds_data_short/%s.txt' % point_name, 'a+') as f:
+    with open('predict_1_data/%s.txt' % point_name, 'a+') as f:
         line = ",".join(['%s' % i for i in data[point_name]])
         line += '\n'
         f.write(line)
@@ -119,6 +119,10 @@ def get_points_count():
 # get_points_count()
 
 
+
+
+
+
 def get_points_distribution_list():
     nums = []
     center_point = []
@@ -141,7 +145,7 @@ def get_points_distribution_list():
 
 
 
-# get_points_distribution_list()
+#get_points_distribution_list()
 
 def counts():
     counts = 0
