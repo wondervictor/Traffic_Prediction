@@ -6,14 +6,15 @@ point = get_config_arg('point', int, 0)
 
 
 with open('data/train.list', 'w') as f:
-    f.write('data/speed_data/%s.txt' % point)
+    f.write('data/%s.txt' % point)
 with open('data/test.list', 'w') as f:
-    f.write('data/speed_data/%s.txt' % point)
+    f.write('data/%s.txt' % point)
 process = 'process'
 if is_predict:
     process = 'process_predict'
     with open('data/pred.list', 'w') as f:
-        f.write('data/predict_data/%s.txt' % point)
+        f.write('data/predict_data.txt')
+
 
 test = 'data/test.list'
 train = 'data/train.list'
@@ -72,6 +73,14 @@ for i in range(TERM_SIZE):
     for data in input_data:
         lstm_layer = lstmemory(input=data, act=ReluActivation())
         lstm_1_layer_outputs.append(lstm_layer)
+
+    # 1 - pool
+
+    # 1 - pool - avg
+    # lstm_1_avg_pools = []
+    # for out in lstm_1_layer_outputs:
+    #     avg = pooling_layer(input=out, pooling_type=AvgPooling())
+    #     lstm_1_avg_pools.append(avg)
 
     # 1 - pool - last
     lstm_1_last_pools = []

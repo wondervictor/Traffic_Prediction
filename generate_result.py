@@ -12,6 +12,7 @@ def generate(point, file_name):
     with open('result.csv', 'a+') as f:
         line = '%s,' % point
         line += ','.join(['%s' % (x + 1) for x in data])
+        line += '\n'
         f.write(line)
 
 if __name__ == '__main__':

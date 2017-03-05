@@ -2,7 +2,7 @@
 
 set -e
 
-cfg=trainer_config.py
+cfg=predict_config_24.py
 # pass choice
 point_list='data/point_count.txt'
 
@@ -16,7 +16,8 @@ do
         --use_gpu=false \
         --job=test \
         --init_model_path=$model \
-        --config_args=is_predict=1,num=$num,point=$point \
+        --config_args=is_predict=1 \
+        --config_args=num=$num,point=$point \
         --predict_output_dir=result/$point
         python2.7 generate_result.py $point result/${point}/rank-00000
 
