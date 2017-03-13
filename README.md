@@ -1,5 +1,6 @@
-# Traffic Prediction
+# Traffic Prediction Preliminary Version
 
+> for preliminary competition
 
 > ASC 2017 DNN Problem, This is the current method for this problem. I will move on to find a more accurate way to solve this prediction.
 
@@ -34,8 +35,7 @@ sh predict.sh
 ## Network
 
 
-![](https://github.com/wondervictor/Traffic_Prediction/blob/master/images/network.png)
-
+![](https://github.com/wondervictor/Traffic_Prediction/blob/old/images/network.png?raw=true)
 
 ## Any Problem
 
