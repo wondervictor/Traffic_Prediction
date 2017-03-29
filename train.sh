@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 set -e
-mkdir output
 point_list='data/point_count.txt'
 cfg=trainer_config.py
    output_dir=./output/test/

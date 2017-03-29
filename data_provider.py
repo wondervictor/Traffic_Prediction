@@ -13,7 +13,8 @@ def initialize(settings, num, point, **kwargs):
     for i in range(num):
         key = 'data_%s' % i
         s[key] = dense_vector_sequence(TERM_SIZE)
-    s['label'] = integer_value(4)
+        label_key = 'label_%s' % i
+        s[label_key] = integer_value(4)
     settings.input_types = s
 
 
@@ -28,15 +29,17 @@ def process(settings, filename):
             data.append(speed)
             max_len = len(speed)
 
-    for i in range(max_len-TERM_SIZE):
+    for i in range(max_len-2*TERM_SIZE):
         result = dict()
         for j in range(node_num):
             key = 'data_%s' % j
             result[key] = [[data[j][k]-1 for k in range(i, i+TERM_SIZE)]]
-        label = data[0][i+TERM_SIZE]
-        if label == 0:
-            label = random.randint(1, 4)
-        result['label'] = label-1
+        label = data[0][i+TERM_SIZE:i+2*TERM_SIZE]
+        for j in range(TERM_SIZE):
+            if label[j] == 0:
+                label[j] = random.randint(1, 4)
+            key = 'label_%s' % j
+            result[key] = label[j] - 1
         yield result
 
 

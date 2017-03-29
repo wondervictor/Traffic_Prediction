@@ -1,4 +1,5 @@
 from paddle.trainer_config_helpers import *
+import logging
 
 is_predict = get_config_arg('is_predict', bool, False)
 num = get_config_arg('num', int, 0)
@@ -45,6 +46,21 @@ settings(
 )
 
 
+def forward_network(index, input_layer, output, size):
+    paramAttr = ParameterAttribute(name='common', initial_max=1.0, initial_min=-1.0)
+    key = 'label_%s' % index
+    label = data_layer(name=key, size=4)
+    recent_layer = fc_layer(input=output, size=size, act=ReluActivation())
+    fc_nn_layer = fc_layer(input=[recent_layer, output], act=ReluActivation, size=size*2, paramAttr=paramAttr)
+    dropout_1_layer = dropout_layer(input=fc_nn_layer, dropout_rate=0.2)
+    output_layer = fc_layer(input=dropout_1_layer, size=4, act=SoftmaxActivation())
+    time_output = classification_cost(input=output_layer, label=label)
+    time_value = maxid_layer(output_layer)
+    output.append(time_value)
+    return time_output, output
+
+
+
 TERM_SIZE = 24
 NODE_NUM = num
 
@@ -55,82 +71,50 @@ for i in range(NODE_NUM):
     input_data.append(data_layer(name=key, size=TERM_SIZE))
 
 output = []
+cost_output = []
 
 paramAttr = ParameterAttribute(name='common', initial_max=1.0, initial_min=-1.0)
 
-# 0 - LSTM for one point
-center_data = input_data[0]
 
-# 0 - LSTM
+# 1 lstmemory cells
+lstm_cells = []
 
-lstm_0_layer = lstmemory(input=center_data, act=ReluActivation())
-
-lstm_0_last_pool = last_seq(input=lstm_0_layer)
-
-# 1 - LSTM
-lstm_1_layer_outputs = []
 for data in input_data:
-    lstm_layer = lstmemory(input=data, act=ReluActivation())
-    lstm_1_layer_outputs.append(lstm_layer)
+    lstm_cell = lstmemory(input=data, gate_act=TanhActivation(), act=ReluActivation(), state_act=TanhActivation(),size=1)
+    lstm_cells.append(lstm_cell)
 
-# 1 - pool - last
-lstm_1_last_pools = []
-for out in lstm_1_layer_outputs:
-    last = last_seq(input=out)
-    lstm_1_last_pools.append(last)
+lstm_fc_layer = fc_layer(input=lstm_cells, size=3, act=SigmoidActivation(),param_attr=paramAttr)
 
-# 1 - lstm - output
-lstm_1_outputs = []  # [lstm_1_last_pools, lstm_1_avg_pools]
-lstm_1_outputs.extend(lstm_1_last_pools)
-# lstm_1_outputs.extend(lstm_1_avg_pools)
+simple_lstm_layer = simple_lstm(input=lstm_fc_layer, size=TERM_SIZE,paramAttr=paramAttr, gate_act=TanhActivation(), state_act=TanhActivation(),
+                                act=SigmoidActivation())
+lastseq_1_layer = last_seq(input=simple_lstm_layer)
+
+dropout_1_layer = dropout_layer(input=last_seq, dropout_rate=0.2)
+
+time_1_output_layer = fc_layer(input=dropout_1_layer, size=4, act=SoftmaxActivation(), paramAttr=paramAttr)
+
+label_1 = data_layer(name='label_1', size=4)
+
+time_1_output = classification_cost(input=time_1_output_layer, label=label_1)
+
+time_1_value = maxid_layer(input=time_1_output_layer)
+
+cost_output.append(time_1_output)
+output.append(time_1_value)
+
+for i in range(1, TERM_SIZE):
+    time_output, output_arr = forward_network(i, last_seq, output, TERM_SIZE)
+    cost_output.append(time_output)
+    output = output_arr
+
+outputs(cost_output)
 
 
-# 1 - fc
-fc_1_1_layer = fc_layer(input=lstm_1_outputs, size=TERM_SIZE, act=ReluActivation())
-fc_1_2_layer = fc_layer(input=fc_1_1_layer, size=TERM_SIZE * NODE_NUM, act=ReluActivation())
 
-# 1 all layers output
 
-all_1_layers = []  # [lstm_1_last_pools, fc_1_2_layer]
-# all_1_layers.extend(lstm_1_avg_pools)
-all_1_layers.append(fc_1_2_layer)
 
-# 2 - fc
-fc_2_1_layer = fc_layer(input=input_data, size=TERM_SIZE, act=ReluActivation())
-fc_2_2_layer = fc_layer(input=fc_2_1_layer, size=TERM_SIZE * NODE_NUM, act=ReluActivation())
 
-# 2 - simple lstm
-simple_2_1_lstm = simple_lstm(input=fc_2_2_layer, size=TERM_SIZE * NODE_NUM, act=ReluActivation())
 
-# 2 - fc
-fc_2_3_layer = fc_layer(input=simple_2_1_lstm, size=TERM_SIZE, act=ReluActivation())
 
-# 2 - simple lstm
-simple_2_2_lstm = simple_lstm(input=fc_2_3_layer, size=TERM_SIZE, act=ReluActivation())
 
-# 2 - last pool
-last_2_pool = last_seq(input=simple_2_2_lstm)
 
-# all 2 layers output
-all_2_layers = last_2_pool
-
-all_ouputs = []
-all_ouputs.extend(all_1_layers)
-all_ouputs.append(all_2_layers)
-all_ouputs.extend(lstm_1_last_pools)
-all_ouputs.append(lstm_0_last_pool)
-
-all_fc_1_layer = fc_layer(input=all_ouputs, size=TERM_SIZE, act=ReluActivation())
-output_layer = fc_layer(input=all_fc_1_layer, size=4, act=SoftmaxActivation())
-
-if is_predict:
-    maxid = maxid_layer(output_layer)
-    output.append(maxid)
-else:
-    # label
-    label = data_layer(name='label', size=4)
-    cost = classification_cost(name='<---- cost----->', input=output_layer,
-                               label=label)
-    output.append(cost)
-
-outputs(output)
