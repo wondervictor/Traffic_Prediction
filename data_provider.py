@@ -13,9 +13,7 @@ def initialize(settings, num, point, **kwargs):
     for i in range(num):
         key = 'data_%s' % i
         s[key] = dense_vector_sequence(TERM_SIZE)
-    for i in range(TERM_SIZE):
-        label_key = 'label_%s' % i
-        s[label_key] = integer_value(4)
+    s['label'] = 
     settings.input_types = s
 
 
