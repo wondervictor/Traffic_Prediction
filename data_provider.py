@@ -13,7 +13,7 @@ def initialize(settings, num, point, **kwargs):
     for i in range(num):
         key = 'data_%s' % i
         s[key] = dense_vector_sequence(TERM_SIZE)
-    s['label'] = 
+    s['label'] = dense_vector(TERM_SIZE)
     settings.input_types = s
 
 
@@ -37,8 +37,8 @@ def process(settings, filename):
         for j in range(TERM_SIZE):
             if label[j] == 0:
                 label[j] = random.randint(1, 4)
-            key = 'label_%s' % j
-            result[key] = label[j] - 1
+            label[j] -= 1
+        result['label'] = label
         yield result
 
 

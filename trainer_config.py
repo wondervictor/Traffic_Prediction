@@ -58,8 +58,7 @@ for i in range(NODE_NUM):
     key = "data_%s" % i
     input_data.append(data_layer(name=key, size=TERM_SIZE))
 
-output = []
-cost_output = []
+output_values = []
 
 
 # 1 lstmemory cells
@@ -68,6 +67,8 @@ lstm_cells = []
 for data in input_data:
     lstm_cell = lstmemory(input=data, gate_act=TanhActivation(), act=ReluActivation(), state_act=TanhActivation())
     lstm_cells.append(lstm_cell)
+
+label = data_layer(name='label', size=TERM_SIZE)
 
 lstm_fc_layer = fc_layer(input=lstm_cells, size=3, act=SigmoidActivation())
 
@@ -81,48 +82,66 @@ lastseq_1_layer = last_seq(input=simple_lstm_layer)
 
 dropout_1_layer = dropout_layer(input=lastseq_1_layer, dropout_rate=0.2)
 
-time_1_output_layer = fc_layer(input=dropout_1_layer, size=4, act=SoftmaxActivation())
+time_1_output_layer = fc_layer(input=dropout_1_layer, size=4, act=ReluActivation())
 
-label_1 = data_layer(name='label_0', size=4)
+time_1_value = fc_layer(input=time_1_output_layer, size=1, act=ReluActivation())
 
-time_1_cost = classification_cost(name='<--cost0-->', input=time_1_output_layer, label=label_1)
-
-time_1_value = maxid_layer(input=time_1_output_layer)
-
-cost_output.append(time_1_cost)
+output_values.append(time_1_value)
 
 
-output.append(time_1_value)
-
-
-for i in range(1, TERM_SIZE):
-
-    with mixed_layer(size=TERM_SIZE) as m:
-        for layer in output:
-            m += layer
+def neural_unit(input_values, lstm_seq, i):
     paramAttr = ParameterAttribute(initial_max=1.0, initial_min=-1.0)
 
-    key = 'label_%s' % i
+    recent_layer = fc_layer(input=input_values, size=TERM_SIZE, act=ReluActivation())
 
-    label = data_layer(name=key, size=4)
-
-    recent_layer = fc_layer(input=m, size=TERM_SIZE, act=ReluActivation())
-
-    fc_nn_layer = fc_layer(input=recent_layer, act=ReluActivation(), size=TERM_SIZE*2)
+    fc_nn_layer = fc_layer(input=[recent_layer, lstm_seq], act=ReluActivation(), size=TERM_SIZE*2)
 
     dropout_nn_layer = dropout_layer(input=fc_nn_layer, dropout_rate=0.2)
 
-    output_layer = fc_layer(input=dropout_nn_layer, size=4, act=SoftmaxActivation())
+    output_layer = fc_layer(input=dropout_nn_layer, size=4, act=ReluActivation())
 
-    time_output = classification_cost(name='<--cost%s-->' % i, input=output_layer, label=label)
+    time_value = fc_layer(name='time_%s' % i,input=output_layer, size=1, act=ReluActivation())
 
-    time_value = maxid_layer(output_layer)
+    return time_value
 
-    output.append(time_value.outputs.ids)
-    cost_output.append(time_output)
 
-outputs(cost_output)
+for index in range(1, TERM_SIZE):
+    time_tmp_value = neural_unit(output_values, lastseq_1_layer, index)
+    output_values.append(output_values)
 
+
+
+
+# for i in range(1, TERM_SIZE):
+#
+#     paramAttr = ParameterAttribute(initial_max=1.0, initial_min=-1.0)
+#
+#     recent_layer = fc_layer(input=output_values, size=TERM_SIZE, act=ReluActivation())
+#
+#     fc_nn_layer = fc_layer(input=[recent_layer, lastseq_1_layer], act=ReluActivation(), size=TERM_SIZE*2)
+#
+#     dropout_nn_layer = dropout_layer(input=fc_nn_layer, dropout_rate=0.2)
+#
+#     output_layer = fc_layer(input=dropout_nn_layer, size=4, act=ReluActivation())
+#
+#     time_value = fc_layer(name='time_%s' % i,input=output_layer, size=1, act=ReluActivation())
+#
+#     new_output_values = output_values
+#     new_output_values.append(time_value)
+#     output_values = new_output_values
+
+
+    #output_values.append(time_value)
+
+# with mixed_layer(size=TERM_SIZE) as m:
+#     for ly in output_values:
+#         m += ly
+
+out_layer = fc_layer(input=output_values, size=TERM_SIZE, act=ReluActivation())
+
+cost = regression_cost(input=out_layer, label=label)
+
+outputs(cost)
 
 
 
