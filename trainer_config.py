@@ -35,7 +35,7 @@ define_py_data_sources2(
     }
 )
 
-batch_size = 128
+batch_size = 144
 
 if is_predict:
     batch_size = 1
@@ -43,7 +43,7 @@ if is_predict:
 settings(
     batch_size=batch_size,
     learning_rate=0.001,
-    learning_method=MomentumOptimizer(0.0001),
+    learning_method=RMSPropOptimizer(0.001),
     regularization=L2Regularization(8e-4)
 )
 
@@ -88,11 +88,17 @@ time_1_value = fc_layer(input=time_1_output_layer, size=1, act=ReluActivation())
 
 output_values.append(time_1_value)
 
+last_time = time_1_value
+
 
 def neural_unit(input_values, lstm_seq, i):
     paramAttr = ParameterAttribute(initial_max=1.0, initial_min=-1.0)
 
-    recent_layer = fc_layer(input=input_values, size=TERM_SIZE, act=ReluActivation())
+    # with mixed_layer(size=len(input_values)) as m:
+        # m += identity_projection(input_values)
+    #    for layer in input_values:
+    #        m += identity_projection(layer)
+    recent_layer = fc_layer(input=[input_values[k] for k in range(0, i)], size=i, act=ReluActivation())
 
     fc_nn_layer = fc_layer(input=[recent_layer, lstm_seq], act=ReluActivation(), size=TERM_SIZE*2)
 
@@ -100,14 +106,86 @@ def neural_unit(input_values, lstm_seq, i):
 
     output_layer = fc_layer(input=dropout_nn_layer, size=4, act=ReluActivation())
 
-    time_value = fc_layer(name='time_%s' % i,input=output_layer, size=1, act=ReluActivation())
+    time_value = fc_layer(name='time_%s' % i, input=output_layer, size=1, act=ReluActivation())
 
     return time_value
 
 
-for index in range(1, TERM_SIZE):
-    time_tmp_value = neural_unit(output_values, lastseq_1_layer, index)
-    output_values.append(output_values)
+time_tmp_value = neural_unit(output_values, lastseq_1_layer, 1)
+output_values.append(time_tmp_value)
+
+time_tmp_value = neural_unit(output_values, lastseq_1_layer, 2)
+output_values.append(time_tmp_value)
+
+time_tmp_value = neural_unit(output_values, lastseq_1_layer, 3)
+output_values.append(time_tmp_value)
+
+time_tmp_value = neural_unit(output_values, lastseq_1_layer, 4)
+output_values.append(time_tmp_value)
+
+time_tmp_value = neural_unit(output_values, lastseq_1_layer, 5)
+output_values.append(time_tmp_value)
+
+time_tmp_value = neural_unit(output_values, lastseq_1_layer, 6)
+output_values.append(time_tmp_value)
+
+time_tmp_value = neural_unit(output_values, lastseq_1_layer, 7)
+output_values.append(time_tmp_value)
+
+time_tmp_value = neural_unit(output_values, lastseq_1_layer, 8)
+output_values.append(time_tmp_value)
+
+time_tmp_value = neural_unit(output_values, lastseq_1_layer, 9)
+output_values.append(time_tmp_value)
+
+time_tmp_value = neural_unit(output_values, lastseq_1_layer, 10)
+output_values.append(time_tmp_value)
+
+time_tmp_value = neural_unit(output_values, lastseq_1_layer, 11)
+output_values.append(time_tmp_value)
+
+time_tmp_value = neural_unit(output_values, lastseq_1_layer, 12)
+output_values.append(time_tmp_value)
+
+time_tmp_value = neural_unit(output_values, lastseq_1_layer, 13)
+output_values.append(time_tmp_value)
+
+time_tmp_value = neural_unit(output_values, lastseq_1_layer, 14)
+output_values.append(time_tmp_value)
+
+time_tmp_value = neural_unit(output_values, lastseq_1_layer, 15)
+output_values.append(time_tmp_value)
+
+time_tmp_value = neural_unit(output_values, lastseq_1_layer, 16)
+output_values.append(time_tmp_value)
+
+time_tmp_value = neural_unit(output_values, lastseq_1_layer, 17)
+output_values.append(time_tmp_value)
+
+time_tmp_value = neural_unit(output_values, lastseq_1_layer, 18)
+output_values.append(time_tmp_value)
+
+time_tmp_value = neural_unit(output_values, lastseq_1_layer, 19)
+output_values.append(time_tmp_value)
+
+time_tmp_value = neural_unit(output_values, lastseq_1_layer, 20)
+output_values.append(time_tmp_value)
+
+time_tmp_value = neural_unit(output_values, lastseq_1_layer, 21)
+output_values.append(time_tmp_value)
+
+time_tmp_value = neural_unit(output_values, lastseq_1_layer, 22)
+output_values.append(time_tmp_value)
+
+time_tmp_value = neural_unit(output_values, lastseq_1_layer, 23)
+output_values.append(time_tmp_value)
+
+
+out_layer = fc_layer(input=output_values, size=TERM_SIZE, act=ReluActivation())
+
+cost = regression_cost(input=out_layer, label=label)
+
+outputs(cost)
 
 
 
@@ -136,12 +214,6 @@ for index in range(1, TERM_SIZE):
 # with mixed_layer(size=TERM_SIZE) as m:
 #     for ly in output_values:
 #         m += ly
-
-out_layer = fc_layer(input=output_values, size=TERM_SIZE, act=ReluActivation())
-
-cost = regression_cost(input=out_layer, label=label)
-
-outputs(cost)
 
 
 

@@ -7,8 +7,8 @@ cfg=trainer_config.py
    paddle train \
    --config=$cfg \
    --save_dir=$output_dir \
-   --trainer_count=4 \
-   --log_period=1000 \
+   --trainer_count=8 \
+   --log_period=100 \
    --dot_period=100 \
    --num_passes=50 \
    --use_gpu=false \
