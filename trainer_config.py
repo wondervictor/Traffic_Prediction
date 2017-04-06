@@ -62,131 +62,67 @@ output_values = []
 
 
 # 1 lstmemory cells
-lstm_cells = []
+# lstm_cells = []
+#
+# for data in input_data:
+#     lstm_cell = lstmemory(input=data, gate_act=TanhActivation(), act=ReluActivation(), state_act=TanhActivation())
+#     lstm_cells.append(lstm_cell)
+#
+# label = data_layer(name='label', size=TERM_SIZE)
+#
+# lstm_fc_layer = fc_layer(input=lstm_cells, size=3, act=SigmoidActivation())
+#
+# simple_lstm_layer = simple_lstm(input=lstm_fc_layer,
+#                                 size=TERM_SIZE,
+#                                 gate_act=TanhActivation(),
+#                                 state_act=TanhActivation(),
+#                                 act=ReluActivation())
+#
+# lastseq_1_layer = last_seq(input=simple_lstm_layer)
+#
+# dropout_1_layer = dropout_layer(input=lastseq_1_layer, dropout_rate=0.2)
+#
+# time_1_output_layer = fc_layer(input=dropout_1_layer, size=4, act=ReluActivation())
+#
+# time_1_value = fc_layer(input=time_1_output_layer, size=1, act=ReluActivation())
+#
+# output_values.append(time_1_value)
+#
+# last_time = time_1_value
+#
 
-for data in input_data:
-    lstm_cell = lstmemory(input=data, gate_act=TanhActivation(), act=ReluActivation(), state_act=TanhActivation())
-    lstm_cells.append(lstm_cell)
+# def neural_unit(input_values, lstm_seq, i):
+#     paramAttr = ParameterAttribute(initial_max=1.0, initial_min=-1.0)
+#
+#     # with mixed_layer(size=len(input_values)) as m:
+#         # m += identity_projection(input_values)
+#     #    for layer in input_values:
+#     #        m += identity_projection(layer)
+#     recent_layer = concat_layer(input=[input_values[k] for k in range(0, i)])
+#
+#     # inputss = StaticInput(input=recent_layer, is_seq=False)
+#     recent_layer = fc_layer(input=recent_layer, size=i, act=ReluActivation())
+#
+#     fc_nn_layer = fc_layer(input=[recent_layer, lstm_seq], act=ReluActivation(), size=TERM_SIZE*2)
+#
+#     dropout_nn_layer = dropout_layer(input=fc_nn_layer, dropout_rate=0.2)
+#
+#     output_layer = fc_layer(input=dropout_nn_layer, size=4, act=ReluActivation())
+#
+#     time_value = fc_layer(name='time_%s' % i, input=output_layer, size=1, act=ReluActivation())
+#
+#     return time_value
+#
 
-label = data_layer(name='label', size=TERM_SIZE)
-
-lstm_fc_layer = fc_layer(input=lstm_cells, size=3, act=SigmoidActivation())
-
-simple_lstm_layer = simple_lstm(input=lstm_fc_layer,
-                                size=TERM_SIZE,
-                                gate_act=TanhActivation(),
-                                state_act=TanhActivation(),
-                                act=ReluActivation())
-
-lastseq_1_layer = last_seq(input=simple_lstm_layer)
-
-dropout_1_layer = dropout_layer(input=lastseq_1_layer, dropout_rate=0.2)
-
-time_1_output_layer = fc_layer(input=dropout_1_layer, size=4, act=ReluActivation())
-
-time_1_value = fc_layer(input=time_1_output_layer, size=1, act=ReluActivation())
-
-output_values.append(time_1_value)
-
-last_time = time_1_value
-
-
-def neural_unit(input_values, lstm_seq, i):
-    paramAttr = ParameterAttribute(initial_max=1.0, initial_min=-1.0)
-
-    # with mixed_layer(size=len(input_values)) as m:
-        # m += identity_projection(input_values)
-    #    for layer in input_values:
-    #        m += identity_projection(layer)
-    recent_layer = fc_layer(input=[input_values[k] for k in range(0, i)], size=i, act=ReluActivation())
-
-    fc_nn_layer = fc_layer(input=[recent_layer, lstm_seq], act=ReluActivation(), size=TERM_SIZE*2)
-
-    dropout_nn_layer = dropout_layer(input=fc_nn_layer, dropout_rate=0.2)
-
-    output_layer = fc_layer(input=dropout_nn_layer, size=4, act=ReluActivation())
-
-    time_value = fc_layer(name='time_%s' % i, input=output_layer, size=1, act=ReluActivation())
-
-    return time_value
-
-
-time_tmp_value = neural_unit(output_values, lastseq_1_layer, 1)
-output_values.append(time_tmp_value)
-
-time_tmp_value = neural_unit(output_values, lastseq_1_layer, 2)
-output_values.append(time_tmp_value)
-
-time_tmp_value = neural_unit(output_values, lastseq_1_layer, 3)
-output_values.append(time_tmp_value)
-
-time_tmp_value = neural_unit(output_values, lastseq_1_layer, 4)
-output_values.append(time_tmp_value)
-
-time_tmp_value = neural_unit(output_values, lastseq_1_layer, 5)
-output_values.append(time_tmp_value)
-
-time_tmp_value = neural_unit(output_values, lastseq_1_layer, 6)
-output_values.append(time_tmp_value)
-
-time_tmp_value = neural_unit(output_values, lastseq_1_layer, 7)
-output_values.append(time_tmp_value)
-
-time_tmp_value = neural_unit(output_values, lastseq_1_layer, 8)
-output_values.append(time_tmp_value)
-
-time_tmp_value = neural_unit(output_values, lastseq_1_layer, 9)
-output_values.append(time_tmp_value)
-
-time_tmp_value = neural_unit(output_values, lastseq_1_layer, 10)
-output_values.append(time_tmp_value)
-
-time_tmp_value = neural_unit(output_values, lastseq_1_layer, 11)
-output_values.append(time_tmp_value)
-
-time_tmp_value = neural_unit(output_values, lastseq_1_layer, 12)
-output_values.append(time_tmp_value)
-
-time_tmp_value = neural_unit(output_values, lastseq_1_layer, 13)
-output_values.append(time_tmp_value)
-
-time_tmp_value = neural_unit(output_values, lastseq_1_layer, 14)
-output_values.append(time_tmp_value)
-
-time_tmp_value = neural_unit(output_values, lastseq_1_layer, 15)
-output_values.append(time_tmp_value)
-
-time_tmp_value = neural_unit(output_values, lastseq_1_layer, 16)
-output_values.append(time_tmp_value)
-
-time_tmp_value = neural_unit(output_values, lastseq_1_layer, 17)
-output_values.append(time_tmp_value)
-
-time_tmp_value = neural_unit(output_values, lastseq_1_layer, 18)
-output_values.append(time_tmp_value)
-
-time_tmp_value = neural_unit(output_values, lastseq_1_layer, 19)
-output_values.append(time_tmp_value)
-
-time_tmp_value = neural_unit(output_values, lastseq_1_layer, 20)
-output_values.append(time_tmp_value)
-
-time_tmp_value = neural_unit(output_values, lastseq_1_layer, 21)
-output_values.append(time_tmp_value)
-
-time_tmp_value = neural_unit(output_values, lastseq_1_layer, 22)
-output_values.append(time_tmp_value)
-
-time_tmp_value = neural_unit(output_values, lastseq_1_layer, 23)
-output_values.append(time_tmp_value)
-
-
-out_layer = fc_layer(input=output_values, size=TERM_SIZE, act=ReluActivation())
-
-cost = regression_cost(input=out_layer, label=label)
-
-outputs(cost)
-
+# for i in range(1, TERM_SIZE):
+#     output_values.append(neural_unit(output_values, lastseq_1_layer, i))
+#
+# out_layer = fc_layer(input=output_values, size=TERM_SIZE, act=ReluActivation())
+#
+# cost = regression_cost(input=out_layer, label=label)
+#
+# outputs(cost)
+#
 
 
 
