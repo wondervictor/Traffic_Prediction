@@ -1,7 +1,9 @@
 from paddle.trainer_config_helpers import *
-# from paddle.trainer.config_parser import *
+import paddle.trainer.config_parser as cp
 import numpy as np
 import logging
+
+
 
 is_predict = get_config_arg('is_predict', bool, False)
 num = get_config_arg('num', int, 0)
@@ -24,10 +26,12 @@ if is_predict:
     train = None
     test = 'data/pred.list'
 
+
+
 define_py_data_sources2(
     train_list=train,
     test_list=test,
-    module='data_provider',
+    module="data_provider",
     obj=process,
     args={
         'num': num,
@@ -58,7 +62,49 @@ for i in range(NODE_NUM):
     key = "data_%s" % i
     input_data.append(data_layer(name=key, size=TERM_SIZE))
 
-output_values = []
+embeddings = []
+
+# for i in range(NODE_NUM):
+#     node_embedding = embedding_layer(input=input_data[i], size=TERM_SIZE)
+#     embeddings.append(node_embedding)
+
+# LSTM Cells Embedding
+
+
+lstm_cells = []
+for data in input_data:
+    lstm = simple_lstm(input=data, size=NODE_NUM, act=ReluActivation())
+    lstm_cells.append(lstm)
+
+
+concat_1_layer = concat_layer(input=lstm_cells,name='concat' ,act=ReluActivation())
+
+fc_1_layer = fc_layer(input=concat_1_layer, name='fc_1', size=TERM_SIZE*NODE_NUM,act=ReluActivation())
+
+sim_1_layer = simple_lstm(input=fc_1_layer, name="sim1", size=TERM_SIZE*NODE_NUM, act=ReluActivation())
+
+label = data_layer(name='label', size=4)
+
+output_layer = fc_layer(input=sim_1_layer, size=5, act=SoftmaxActivation())
+
+#group = lstmemory_group(input=output_layer)
+
+#cost = classification_cost(input=group, label=label)
+
+
+#s = cross_entropy(input=output_layer, label=label, e)
+
+ctc = ctc_layer(input=output_layer,label=label, size=5)
+
+eval = ctc_error_evaluator(input=output_layer,label=label)
+
+outputs(ctc)
+
+# cost = classification_cost(evaluator=ctc_error_evaluator(input=output_layer,label=label))
+
+
+
+
 
 
 # 1 lstmemory cells

@@ -13,7 +13,10 @@ def initialize(settings, num, point, **kwargs):
     for i in range(num):
         key = 'data_%s' % i
         s[key] = dense_vector_sequence(TERM_SIZE)
-    s['label'] = dense_vector(TERM_SIZE)
+
+    s['label'] = integer_value_sequence(TERM_SIZE)
+    #label_key = 'label_%s' % i
+    #s[label_key] = integer_value(4)
     settings.input_types = s
 
 
@@ -33,6 +36,10 @@ def process(settings, filename):
         for j in range(node_num):
             key = 'data_%s' % j
             result[key] = [[data[j][k]-1 for k in range(i, i+TERM_SIZE)]]
+        # result['label'] = data[0][i+TERM_SIZE] - 1
+        # if result['label'] == -1:
+        #     result['label'] = random.randint(0,3)
+
         label = data[0][i+TERM_SIZE:i+2*TERM_SIZE]
         for j in range(TERM_SIZE):
             if label[j] == 0:
