@@ -15,6 +15,7 @@ def initialize(settings, num, point, **kwargs):
         s[key] = dense_vector_sequence(TERM_SIZE)
 
     #s['label'] = integer_value_sequence(TERM_SIZE)
+    for i in range(TERM_SIZE):
         label_key = 'label_%s' % i
         s[label_key] = integer_value(4)
     settings.input_types = s
@@ -35,7 +36,7 @@ def process(settings, filename):
         result = dict()
         for j in range(node_num):
             key = 'data_%s' % j
-            result[key] = [[data[j][k]-1 for k in range(i, i+TERM_SIZE)]]
+            result[key] = [[data[j][k] for k in range(i, i+TERM_SIZE)]]
 
 
 
@@ -48,9 +49,9 @@ def process(settings, filename):
             if label[j] == 0:
                  label[j] = random.randint(1, 4)
             label[j] -= 1
-            label_key = '%s' % j
+            label_key = 'label_%s' % j
             result[label_key] = label[j]
-        #logging.info(result)
+        # logging.info(result)
         # result['label'] = label
         yield result
 

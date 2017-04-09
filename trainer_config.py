@@ -87,7 +87,7 @@ input_2_aggrerate = last_seq(input=con_layers)
 # one timstamp
 
 first_timestamp_value = fc_layer(input=input_2_aggrerate, size=4, act=SoftmaxActivation())
-cost = cross_entropy(input=first_timestamp_value, name='cost0', label=data_layer(name='label_0', size=4))
+cost = classification_cost(input=first_timestamp_value, name='cost0', label=data_layer(name='label_0', size=4))
 costs.append(cost)
 
 for i in range(1, TERM_SIZE):
@@ -97,9 +97,7 @@ for i in range(1, TERM_SIZE):
     result_aggrerate_layer = last_seq(con_layers)
     drop_tmp_layer = dropout_layer(input=result_aggrerate_layer, dropout_rate=0.1)
     time_value = fc_layer(input=result_aggrerate_layer, size=4, act=SoftmaxActivation())
-    ecost = cross_entropy(input=time_value, name='cost%s'%i, label=data_layer('label_%s'%i, size=4))
+    ecost = classification_cost(input=time_value, name='cost%s'%i, label=data_layer('label_%s'%i, size=4))
     costs.append(ecost)
-
-#cost = cross_entropy(input=first_timestamp_value, label=data_layer(name='label', size=4))
 
 outputs(costs)
