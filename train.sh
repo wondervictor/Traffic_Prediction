@@ -10,7 +10,7 @@ cfg=trainer_config.py
    --trainer_count=8 \
    --log_period=100 \
    --dot_period=100 \
-   --num_passes=20 \
+   --num_passes=50 \
    --use_gpu=false \
    --config_args=num=3,point=22670 \
    --show_parameter_stats_period=3000 \

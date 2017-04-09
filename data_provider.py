@@ -21,7 +21,7 @@ def initialize(settings, num, point, **kwargs):
     settings.input_types = s
 
 
-@provider(init_hook=initialize, cache=CacheType.CACHE_PASS_IN_MEM)
+@provider(init_hook=initialize, cache=CacheType.CACHE_PASS_IN_MEM,should_shuffle=True)
 def process(settings, filename):
     data = []
     node_num = settings.num
