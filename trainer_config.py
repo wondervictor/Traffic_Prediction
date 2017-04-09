@@ -49,17 +49,19 @@ settings(
 TERM_SIZE = 24
 NODE_NUM = num
 
+
+# cost
+costs = []
+
 # input
 input_data = []
 for i in range(NODE_NUM):
     key = "data_%s" % i
     input_data.append(data_layer(name=key, size=TERM_SIZE))
 
-with mixed_layer(size=TERM_SIZE) as main_input:
-    main_input += full_matrix_projection(input=input_data[0])
 
 # input_fc
-embeddings = []
+#embeddings = []
 # for i in range(NODE_NUM):
 #     key = "data_%s" % i
 #     embeddings.append(embedding_layer(input=input_data[i], size=TERM_SIZE))
@@ -85,10 +87,19 @@ input_2_aggrerate = last_seq(input=con_layers)
 # one timstamp
 
 first_timestamp_value = fc_layer(input=input_2_aggrerate, size=4, act=SoftmaxActivation())
+cost = cross_entropy(input=first_timestamp_value, name='cost0', label=data_layer(name='label_0', size=4))
+costs.append(cost)
 
-cost = cross_entropy(input=first_timestamp_value, label=data_layer(name='label', size=4))
+for i in range(1, TERM_SIZE):
+    fc_tmp_layer = fc_layer(input=con_layers, size=NODE_NUM * NODE_NUM, act=TanhActivation())
+    lstm_tmp_layer = simple_lstm(input=fc_tmp_layer, size=NODE_NUM*NODE_NUM, act=ReluActivation())
+    con_layers = concat_layer(input=[fc_tmp_layer, lstm_tmp_layer])
+    result_aggrerate_layer = last_seq(con_layers)
+    drop_tmp_layer = dropout_layer(input=result_aggrerate_layer, dropout_rate=0.1)
+    time_value = fc_layer(input=result_aggrerate_layer, size=4, act=SoftmaxActivation())
+    ecost = cross_entropy(input=time_value, name='cost%s'%i, label=data_layer('label_%s'%i, size=4))
+    costs.append(ecost)
 
-maxss = maxid_layer(input=first_timestamp_value)
+#cost = cross_entropy(input=first_timestamp_value, label=data_layer(name='label', size=4))
 
-outputs([maxss, cost])
-
+outputs(costs)
