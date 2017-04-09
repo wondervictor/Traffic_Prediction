@@ -32,7 +32,7 @@ def process(settings, filename):
             data.append(speed)
             max_len = len(speed)
 
-    for i in range(max_len-2*TERM_SIZE):
+    for i in range(0,max_len-2*TERM_SIZE):
         result = dict()
         for j in range(node_num):
             key = 'data_%s' % j
