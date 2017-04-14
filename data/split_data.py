@@ -9,10 +9,9 @@ def split_data():
         title_line = title_line.rstrip('\n\r').split(',')[1:]
         times = map(int, title_line)
         # 201603010020
-
         for time_num in times:
             time_value = time_num % 10000
-            if time_value <= 1200 and time_value >= 600:
+            if time_value <= 1000 and time_value >= 600:
                 index.append(times.index(time_num))
         for line in lines[1:]:
             values = map(int, line.rstrip('\n\r').split(','))
@@ -26,5 +25,6 @@ def split_data():
             line += '\n'
             f.write(line)
 
+split_data()
 
 

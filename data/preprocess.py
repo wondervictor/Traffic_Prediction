@@ -1,6 +1,5 @@
 # -*- coding:utf-8 -*-
 
-
 # generate Points.txt
 def points_to_point():
     all_points = {}
@@ -53,8 +52,10 @@ def get_points_count_list():
 
 def generate_links_split_file(points, point_name):
     data = {}
+    # speeds_without_zero
     with open('speeds_without_zero.csv', 'r') as f:
         for line in f.readlines()[1:]:
+        #for line in f.readlines():
             line_elements = map(int, line.replace('\n', '').split(','))
             if line_elements[0] in points or line_elements[0] == point_name:
                 data[line_elements[0]] = line_elements[1:]
@@ -78,16 +79,16 @@ def split_dataset():
             values = map(int, line[1].split(','))
             generate_links_split_file(values, title)
 
-
-
 # generate predict data
 
 TERM_SIZE = 24
 
 def generate_predicts(points, point_name):
     data = {}
+    # speeds_without_zero
     with open('speeds_without_zero.csv', 'r') as f:
         s = f.readlines()[1:]
+        # s = f.readlines()
         for line in s:
             line_elements = map(int, line.replace('\n', '').split(','))
             if line_elements[0] in points or line_elements[0] == point_name:
@@ -115,7 +116,7 @@ def get_predict_data():
 
 
 if __name__ == '__main__':
-    points_to_point()
-    get_points_count_list()
+    # points_to_point()
+    # get_points_count_list()
     split_dataset()
     get_predict_data()

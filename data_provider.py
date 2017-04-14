@@ -21,7 +21,7 @@ def initialize(settings, num, point, **kwargs):
     settings.input_types = s
 
 
-@provider(init_hook=initialize, cache=CacheType.CACHE_PASS_IN_MEM,should_shuffle=True)
+@provider(init_hook=initialize, cache=CacheType.NO_CACHE,should_shuffle=True)
 def process(settings, filename):
     data = []
     node_num = settings.num
@@ -37,8 +37,6 @@ def process(settings, filename):
         for j in range(node_num):
             key = 'data_%s' % j
             result[key] = [[data[j][k] for k in range(i, i+TERM_SIZE)]]
-
-
 
         # result['label'] = data[0][i+TERM_SIZE] - 1
         # if result['label'] == -1:
