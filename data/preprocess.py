@@ -159,14 +159,17 @@ def create_dataset(filename):
 
 
 def generate_predicts_2(center_point, nearby, subnodes,data_set):
+
     center = data_set['%s' % center_point]
+    max_len = len(center)
+    center = center[max_len-TERM_SIZE:max_len]
     nearby_nodes = []
     for i in nearby:
-        nearby_nodes.append(data_set['%s' % i])
+        nearby_nodes.append(data_set['%s' % i][max_len-TERM_SIZE:max_len])
 
     subs = []
     for i in subnodes:
-        subs.append(data_set['%s' % i])
+        subs.append(data_set['%s' % i][max_len-TERM_SIZE:max_len])
 
     with open('predict_data/%s', 'w+') as f:
         line = ','.join(['%s' % x for x in center])
@@ -196,18 +199,31 @@ def get_predict_data():
             generate_predicts(values, title)
 
 # point_copu.txt
-def get_predict_data_():
+def get_predict_data_2(dataset):
     with open('Points_copu.txt', 'r') as f:
         for line in f.readlines():
             part = line.rstrip('\n\r').split(';')
             title = int(part[0])
             nearby_nodes = map(int, line[1].split(','))
             subnodes = map(int, line[2].split(','))
+            generate_predicts_2(title, nearby_nodes, subnodes, dataset)
+
+def get_speed_data_2(dataset):
+    with open('Points_copu.txt', 'r') as f:
+        for line in f.readlines():
+            part = line.rstrip('\n\r').split(';')
+            title = int(part[0])
+            nearby_nodes = map(int, line[1].split(','))
+            subnodes = map(int, line[2].split(','))
+            generate_speed_data_2(title, nearby_nodes, subnodes, dataset)
+
 
 
 
 if __name__ == '__main__':
     # points_to_point()
     # get_points_count_list()
-    split_dataset()
-    get_predict_data()
+    # split_dataset()
+    # get_predict_data()
+    dataset = create_dataset('speeds_without_zero.csv')
+
