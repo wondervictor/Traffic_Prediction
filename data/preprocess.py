@@ -50,12 +50,27 @@ def get_points_count_list():
             f.write(line)
 
 
+def get_points_count_list_2():
+    nums = []
+    with open('Points_copu', 'r') as f:
+        for line in f.readlines():
+            line = line.rstrip('\n\r').split(';')
+            point = int(line[0])
+            nearby = map(int, line[1].split(','))
+            sub = map(int, line[2].split(','))
+            nums.append((point, len(nearby), len(sub)))
+    with open('point_count_list_2', 'w+') as f:
+        for tp in nums:
+            line = '%s' % tp[0]
+            line += '%s' % tp[1]
+            line += '%s\n' % tp[2]
+            f.write(line)
+
 def generate_links_split_file(points, point_name):
     data = {}
     # speeds_without_zero
     with open('speeds_without_zero.csv', 'r') as f:
         for line in f.readlines()[1:]:
-        #for line in f.readlines():
             line_elements = map(int, line.replace('\n', '').split(','))
             if line_elements[0] in points or line_elements[0] == point_name:
                 data[line_elements[0]] = line_elements[1:]
@@ -69,6 +84,33 @@ def generate_links_split_file(points, point_name):
             line = ",".join(['%s' % i for i in data[key]])
             line += '\n'
             f.write(line)
+
+
+def generate_speed_data_2(center_point, subnodes, nearby,data_set):
+    center = data_set['%s' % center_point]
+    nearby_nodes = []
+    for i in nearby:
+        nearby_nodes.append(data_set['%s' % i])
+
+    subs = []
+    for i in subnodes:
+        subs.append(data_set['%s' % i])
+
+    with open('speed_data/%s', 'w+') as f:
+        line = ','.join(['%s' % x for x in center])
+        line += '\n'
+        f.write(line)
+        print '<----%s---->' % center_point
+        for node in nearby:
+            line = ",".join(['%s' % i for i in node])
+            line += '\n'
+            f.write(line)
+
+        for node in subs:
+            line = ",".join(['%s' % i for i in node])
+            line += '\n'
+            f.write(line)
+
 
 # split the data set
 def split_dataset():
@@ -106,6 +148,45 @@ def generate_predicts(points, point_name):
             line += '\n'
             f.write(line)
 
+
+def create_dataset(filename):
+    data = {}
+    with open(filename, 'r') as f:
+        for line in f.readlines()[1:]:
+            line = map(int, line.rstrip('\r\n').split(','))
+            data['%s' % line[0]] = line[1:]
+    return data
+
+
+def generate_predicts_2(center_point, nearby, subnodes,data_set):
+    center = data_set['%s' % center_point]
+    nearby_nodes = []
+    for i in nearby:
+        nearby_nodes.append(data_set['%s' % i])
+
+    subs = []
+    for i in subnodes:
+        subs.append(data_set['%s' % i])
+
+    with open('predict_data/%s', 'w+') as f:
+        line = ','.join(['%s' % x for x in center])
+        line += '\n'
+        f.write(line)
+        print '<----%s---->' % center_point
+        for node in nearby:
+            line = ",".join(['%s' % i for i in node])
+            line += '\n'
+            f.write(line)
+
+        for node in subs:
+            line = ",".join(['%s' % i for i in node])
+            line += '\n'
+            f.write(line)
+
+
+
+
+# point.txt
 def get_predict_data():
     with open('Points.txt', 'r') as f:
         for line in f.readlines():
@@ -113,6 +194,16 @@ def get_predict_data():
             title = int(line[0])
             values = map(int, line[1].split(','))
             generate_predicts(values, title)
+
+# point_copu.txt
+def get_predict_data_():
+    with open('Points_copu.txt', 'r') as f:
+        for line in f.readlines():
+            part = line.rstrip('\n\r').split(';')
+            title = int(part[0])
+            nearby_nodes = map(int, line[1].split(','))
+            subnodes = map(int, line[2].split(','))
+
 
 
 if __name__ == '__main__':
