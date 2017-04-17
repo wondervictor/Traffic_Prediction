@@ -226,4 +226,6 @@ if __name__ == '__main__':
     # split_dataset()
     # get_predict_data()
     dataset = create_dataset('speeds_without_zero.csv')
-
+    get_points_count_list_2()
+    get_speed_data_2(dataset)
+    get_predict_data_2(dataset)
