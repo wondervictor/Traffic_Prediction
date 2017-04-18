@@ -52,7 +52,7 @@ def get_points_count_list():
 
 def get_points_count_list_2():
     nums = []
-    with open('Points_copu', 'r') as f:
+    with open('two_dist_point', 'r') as f:
         for line in f.readlines():
             line = line.rstrip('\n\r').split(';')
             point = int(line[0])
@@ -61,8 +61,8 @@ def get_points_count_list_2():
             nums.append((point, len(nearby), len(sub)))
     with open('point_count_list_2', 'w+') as f:
         for tp in nums:
-            line = '%s' % tp[0]
-            line += '%s' % tp[1]
+            line = '%s ' % tp[0]
+            line += '%s ' % tp[1]
             line += '%s\n' % tp[2]
             f.write(line)
 
@@ -91,17 +91,16 @@ def generate_speed_data_2(center_point, subnodes, nearby,data_set):
     nearby_nodes = []
     for i in nearby:
         nearby_nodes.append(data_set['%s' % i])
-
     subs = []
     for i in subnodes:
         subs.append(data_set['%s' % i])
 
-    with open('speed_data/%s', 'w+') as f:
+    with open('speed_data/%s.txt' % center_point, 'w+') as f:
         line = ','.join(['%s' % x for x in center])
         line += '\n'
         f.write(line)
         print '<----%s---->' % center_point
-        for node in nearby:
+        for node in nearby_nodes:
             line = ",".join(['%s' % i for i in node])
             line += '\n'
             f.write(line)
@@ -171,12 +170,12 @@ def generate_predicts_2(center_point, nearby, subnodes,data_set):
     for i in subnodes:
         subs.append(data_set['%s' % i][max_len-TERM_SIZE:max_len])
 
-    with open('predict_data/%s', 'w+') as f:
+    with open('predict_data/%s.txt' % center_point, 'w+') as f:
         line = ','.join(['%s' % x for x in center])
         line += '\n'
         f.write(line)
         print '<----%s---->' % center_point
-        for node in nearby:
+        for node in nearby_nodes:
             line = ",".join(['%s' % i for i in node])
             line += '\n'
             f.write(line)
@@ -200,21 +199,21 @@ def get_predict_data():
 
 # point_copu.txt
 def get_predict_data_2(dataset):
-    with open('Points_copu.txt', 'r') as f:
+    with open('two_dist_point', 'r') as f:
         for line in f.readlines():
             part = line.rstrip('\n\r').split(';')
             title = int(part[0])
-            nearby_nodes = map(int, line[1].split(','))
-            subnodes = map(int, line[2].split(','))
+            nearby_nodes = map(int, part[1].split(','))
+            subnodes = map(int, part[2].split(','))
             generate_predicts_2(title, nearby_nodes, subnodes, dataset)
 
 def get_speed_data_2(dataset):
-    with open('Points_copu.txt', 'r') as f:
+    with open('two_dist_point', 'r') as f:
         for line in f.readlines():
             part = line.rstrip('\n\r').split(';')
             title = int(part[0])
-            nearby_nodes = map(int, line[1].split(','))
-            subnodes = map(int, line[2].split(','))
+            nearby_nodes = map(int, part[1].split(','))
+            subnodes = map(int, part[2].split(','))
             generate_speed_data_2(title, nearby_nodes, subnodes, dataset)
 
 
@@ -225,6 +224,7 @@ if __name__ == '__main__':
     # get_points_count_list()
     # split_dataset()
     # get_predict_data()
+
     dataset = create_dataset('speeds_without_zero.csv')
     get_points_count_list_2()
     get_speed_data_2(dataset)
