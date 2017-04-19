@@ -39,15 +39,15 @@ define_py_data_sources2(
     }
 )
 
-batch_size = 48
+batch_size = 72
 
 if is_predict:
     batch_size = 1
 
 settings(
     batch_size=batch_size,
-    learning_rate=0.0001,
-    learning_method=RMSPropOptimizer(),
+    learning_rate=0.0002,
+    learning_method=MomentumOptimizer(1e-3),
     regularization=L2Regularization(8e-4)
 )
 
