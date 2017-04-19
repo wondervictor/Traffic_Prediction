@@ -46,7 +46,7 @@ if is_predict:
 
 settings(
     batch_size=batch_size,
-    learning_rate=0.001,
+    learning_rate=0.0001,
     learning_method=AdamOptimizer(),
     regularization=L2Regularization(8e-4)
 )
@@ -71,6 +71,89 @@ for j in range(subnode_num):
     nearby_2_nodes_inputs.append(data_layer(name=key, size=TERM_SIZE))
     counter += 1
 
+
+nearby_nodes = []
+
+drop_param = ExtraLayerAttribute(drop_rate=0.2)
+# aggregate all nearby nodes
+nearby_fc_layer_1 = fc_layer(input=nearby_nodes_inputs, size=nearby_num, act=TanhActivation(), layer_attr=drop_param)
+# all subnodes
+nearby_second_fc_layer = fc_layer(input=nearby_2_nodes_inputs, size=subnode_num,act=TanhActivation())
+
+nearby_fc_layer_2 = fc_layer(input=nearby_fc_layer_1, size=nearby_num*4, act=ReluActivation())
+
+nearby_second_fc_layer_2 = fc_layer(input=nearby_second_fc_layer, size=subnode_num*4, act=ReluActivation())
+
+# nearby_lstm = simple_lstm(input=nearby_fc_layer_2, size=nearby_num,act=ReluActivation())
+#
+# nearby_second_lstm = simple_lstm(input=nearby_second_fc_layer_2, size=subnode_num, act=ReluActivation())
+
+large_drop = ExtraLayerAttribute(drop_rate=0.4)
+
+nearby_all_fc_layer = fc_layer(input=concat_layer(input=[nearby_fc_layer_2, nearby_second_fc_layer_2]),
+                               size=nearby_num*subnode_num,
+                               act=TanhActivation(),
+                               layer_attr=large_drop)
+
+nearby_all_aggregate_layer = fc_layer(input=nearby_all_fc_layer, size=nearby_num, act=ReluActivation())
+
+nearby_all_lstm = simple_lstm(input=nearby_all_aggregate_layer, size=nearby_num, act=ReluActivation())
+
+center_lstm = simple_lstm(input=center_data, size=1, act=ReluActivation())
+
+center_with_nearby_layer = fc_layer(input=[nearby_all_aggregate_layer, nearby_all_lstm, center_data],
+                                    size=nearby_num*2,
+                                    act=ReluActivation())
+
+con_layers = concat_layer(input=[center_lstm,center_with_nearby_layer])
+
+# output_result = []
+
+labels = []
+
+for i in range(TERM_SIZE):
+    labels.append(data_layer('label_%s' % i, size=4))
+
+
+SIZE = TERM_SIZE
+
+for i in range(0, TERM_SIZE):
+    bias_attrs_tmp_1 = ParameterAttribute(name='bias_attr_tmp_1_%s' % i,
+                                          learning_rate=1,
+                                          initial_mean=0.,
+                                          initial_std=0.001)
+    para_attr_tmp_1 = ParameterAttribute(name='para_attr_tmp_1_%s' % i,
+                                         initial_mean=0.,
+                                         learning_rate=1,
+                                         initial_std=0.001/math.sqrt(NODE_NUM*4))
+    fc_tmp_layer = fc_layer(input=con_layers,
+                            size=NODE_NUM * 4,
+                            act=TanhActivation(),
+                            bias_attr=bias_attrs_tmp_1,
+                            param_attr=para_attr_tmp_1
+                            )
+    con_layers = concat_layer(input=[fc_tmp_layer, center_data])
+    if i % 2 == 0:
+        lstm_tmp_layer = simple_lstm(input=fc_tmp_layer, size=NODE_NUM*NODE_NUM, act=ReluActivation())
+        con_layers = concat_layer(input=[fc_tmp_layer, lstm_tmp_layer, center_data])
+    result_aggrerate_layer = last_seq(con_layers)
+    drop_tmp_layer = dropout_layer(input=result_aggrerate_layer, dropout_rate=0.1)
+
+    final_layer = fc_layer(input=drop_tmp_layer,
+                           size=4*NODE_NUM,
+                           act=STanhActivation())
+
+    drop_tmp_2_layer = dropout_layer(input=final_layer, dropout_rate= 0.2)
+
+    time_value = fc_layer(input=drop_tmp_2_layer, size=4, act=SoftmaxActivation())
+
+    if not is_predict:
+        ecost = classification_cost(input=time_value, name='cost%s' % i, label=labels[i])
+        costs.append(ecost)
+    else:
+        value = maxid_layer(time_value)
+        costs.append(value)
+outputs(costs)
 
 
 
