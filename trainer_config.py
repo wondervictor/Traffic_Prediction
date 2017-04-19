@@ -47,7 +47,7 @@ if is_predict:
 settings(
     batch_size=batch_size,
     learning_rate=0.0001,
-    learning_method=AdamOptimizer(),
+    learning_method=RMSPropOptimizer(),
     regularization=L2Regularization(8e-4)
 )
 
@@ -129,18 +129,18 @@ for i in range(0, TERM_SIZE):
 
     fc_tmp_layer = fc_layer(input=con_layers,
                             size=NODE_NUM * 4,
-                            act=TanhActivation(),
+                            act=ReluActivation(),
                             bias_attr=bias_attrs_tmp_1,
                             param_attr=para_attr_tmp_1
                             )
-    con_layers = concat_layer(input=[fc_tmp_layer, center_data])
-    if i % 2 == 0:
-        lstm_tmp_layer = simple_lstm(input=fc_tmp_layer, size=NODE_NUM*NODE_NUM, act=ReluActivation())
-        con_layers = concat_layer(input=[fc_tmp_layer, lstm_tmp_layer, center_with_nearby_layer])
-    result_aggrerate_layer = last_seq(con_layers)
-    drop_tmp_layer = dropout_layer(input=result_aggrerate_layer, dropout_rate=0.1)
+    drop_tmp_layer = dropout_layer(input=fc_tmp_layer, dropout_rate=0.2)
 
-    final_layer = fc_layer(input=drop_tmp_layer,
+    if i % 2 == 0:
+        lstm_tmp_layer = simple_lstm(input=drop_tmp_layer, size=NODE_NUM, act=ReluActivation())
+        con_layers = concat_layer(input=[fc_tmp_layer, lstm_tmp_layer, center_with_nearby_layer, center_data])
+    result_aggrerate_layer = last_seq(con_layers)
+
+    final_layer = fc_layer(input=result_aggrerate_layer,
                            size=4*NODE_NUM,
                            act=STanhActivation())
 
