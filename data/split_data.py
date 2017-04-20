@@ -25,6 +25,40 @@ def split_data():
             line += '\n'
             f.write(line)
 
-split_data()
+# split_data()
+
+
+def split_csv_data(input_file, from_date, to_date, output_name):
+    data = {}
+    timestamps = []
+    with open(input_file, 'r') as f:
+        s = f.readlines()
+        timestamps = s[0].rstrip('\n\r').split(',')[1:]
+        timestamps = map(int, timestamps)
+        for line in s[1:]:
+            line = map(int, line.rstrip('\n\r').split(','))
+            data['%s' % line[0]] = line[1:]
+    from_index = timestamps.index(from_date)
+    end_index = timestamps.index(to_date)
+    with open(output_name, 'w+') as f:
+        ran = range(from_index, end_index+1, 1)
+        line = 'id,'
+        line += ','.join(['%s' % timestamps[x] for x in ran])
+        line += '\n'
+        f.write(line)
+        for point in data:
+            line = '%s,' % point
+            line += ','.join(['%s' % data[point][p] for p in ran])
+            line += '\n'
+            f.write(line)
+
+
+if __name__ == '__main__':
+    filename = 'speeds.csv'
+    split_csv_data(filename,201603020000,201603022355, '20160302')
+
+
+
+
 
 

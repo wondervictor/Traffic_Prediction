@@ -111,12 +111,12 @@ nearby_all_aggregate_layer = fc_layer(input=nearby_all_fc_layer, size=nearby_num
 center_with_nearby_layer = fc_layer(input=[nearby_all_aggregate_layer, nearby_all_aggregate_layer, center_data],
                                     size=nearby_num*2,
                                     act=ReluActivation())
-
-center_forward_lstm = simple_lstm(input=center_data, size=1, act=ReluActivation())
-center_backward_lstm = simple_lstm(input=center_data, size=1, act=ReluActivation(), reverse=True)
-
-center_datas = fc_layer(input=[center_backward_lstm, center_forward_lstm], size=1, act=ReluActivation())
-con_layers = concat_layer(input=[center_data, center_datas, center_with_nearby_layer])
+#
+# center_forward_lstm = simple_lstm(input=center_data, size=1, act=ReluActivation())
+# center_backward_lstm = simple_lstm(input=center_data, size=1, act=ReluActivation(), reverse=True)
+#
+# center_datas = fc_layer(input=[center_backward_lstm, center_forward_lstm], size=1, act=ReluActivation())
+con_layers = concat_layer(input=[center_data, center_with_nearby_layer])
 
 # output_result = []
 
