@@ -148,6 +148,9 @@ def generate_predicts(points, point_name):
             f.write(line)
 
 
+
+
+
 def create_dataset(filename):
     data = {}
     with open(filename, 'r') as f:
@@ -186,6 +189,32 @@ def generate_predicts_2(center_point, nearby, subnodes,data_set):
             f.write(line)
 
 
+def generate_predicts_for_validation(center_point, nearby, subnodes, data_set):
+
+        center = data_set['%s' % center_point]
+        max_len = len(center)
+        center = center[0:24]
+        nearby_nodes = []
+        for i in nearby:
+            nearby_nodes.append(data_set['%s' % i][0:24])
+        subs = []
+        for i in subnodes:
+            subs.append(data_set['%s' % i][0:24])
+
+        with open('predict_data/%s.txt' % center_point, 'w+') as f:
+            line = ','.join(['%s' % x for x in center])
+            line += '\n'
+            f.write(line)
+            print '<----%s---->' % center_point
+            for node in nearby_nodes:
+                line = ",".join(['%s' % i for i in node])
+                line += '\n'
+                f.write(line)
+
+            for node in subs:
+                line = ",".join(['%s' % i for i in node])
+                line += '\n'
+                f.write(line)
 
 
 # point.txt
@@ -217,6 +246,14 @@ def get_speed_data_2(dataset):
             generate_speed_data_2(title, nearby_nodes, subnodes, dataset)
 
 
+def get_predict_valid(dataset):
+    with open('two_dist_point', 'r') as f:
+        for line in f.readlines():
+            part = line.rstrip('\n\r').split(';')
+            title = int(part[0])
+            nearby_nodes = map(int, part[1].split(','))
+            subnodes = map(int, part[2].split(','))
+            generate_predicts_for_validation(title, nearby_nodes, subnodes, dataset)
 
 
 if __name__ == '__main__':
@@ -225,7 +262,10 @@ if __name__ == '__main__':
     # split_dataset()
     # get_predict_data()
 
-    dataset = create_dataset('speeds_without_zero.csv')
-    get_points_count_list_2()
-    get_speed_data_2(dataset)
-    get_predict_data_2(dataset)
+    # dataset = create_dataset('speeds_without_zero.csv')
+    # get_points_count_list_2()
+    # get_speed_data_2(dataset)
+    # get_predict_data_2(dataset)
+    dataset = create_dataset('VadiationSet/311.csv')
+    get_predict_valid(dataset)
+

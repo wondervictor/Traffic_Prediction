@@ -39,7 +39,7 @@ define_py_data_sources2(
     }
 )
 
-batch_size = 72
+batch_size = 12
 
 if is_predict:
     batch_size = 1
