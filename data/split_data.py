@@ -65,12 +65,16 @@ def split_by_remove_some_timestamps(input_file, dates, output_name):
             line = map(int, line.rstrip('\n\r').split(','))
             data['%s' % line[0]] = line[1:]
     indexes = range(0, len(timestamps),1)
+    print len(indexes)
     for _date in dates:
         from_index = timestamps.index(_date[0])
         end_index = timestamps.index(_date[1])
-        new_indexes = indexes[0:from_index]
-        new_indexes.extend(indexes[end_index+1:])
-        indexes = new_indexes
+        for i in range(from_index, end_index+1):
+            indexes.remove(i)
+        # new_indexes = indexes[0:from_index]
+        # new_indexes.extend(indexes[end_index+1:])
+    # print indexes
+    print len(indexes)
     with open(output_name, 'w+') as f:
         line = 'id,'
         line += ','.join(['%s' % timestamps[x] for x in indexes])
@@ -82,19 +86,70 @@ def split_by_remove_some_timestamps(input_file, dates, output_name):
             line += '\n'
             f.write(line)
 
+
+def split_out(input_file, dates, ouput_files, output_main_file):
+    data = {}
+    timestamps = []
+    split_timestamps = []
+    with open(input_file, 'r') as f:
+        s = f.readlines()
+        timestamps = s[0].rstrip('\n\r').split(',')[1:]
+        timestamps = map(int, timestamps)
+        for line in s[1:]:
+            line = map(int, line.rstrip('\n\r').split(','))
+            data['%s' % line[0]] = line[1:]
+    indexes = range(0, len(timestamps),1)
+    print len(indexes)
+    for _date in dates:
+        from_index = timestamps.index(_date[0])
+        end_index = timestamps.index(_date[1])
+        for i in range(from_index, end_index+1):
+            indexes.remove(i)
+        split_timestamps.append(range(from_index, end_index+1))
+
+    with open(output_main_file, 'w+') as f:
+        line = 'id,'
+        line += ','.join(['%s' % timestamps[x] for x in indexes])
+        line += '\n'
+        f.write(line)
+        for point in data:
+            line = '%s,' % point
+            line += ','.join(['%s' % data[point][p] for p in indexes])
+            line += '\n'
+            f.write(line)
+    i = 0
+    for rans in split_timestamps:
+        with open(ouput_files[i], 'w+') as f:
+            line = 'id,'
+            line += ','.join(['%s' % timestamps[x] for x in rans])
+            line += '\n'
+            f.write(line)
+            for point in data:
+                line = '%s,' % point
+                line += ','.join(['%s' % data[point][p] for p in rans])
+                line += '\n'
+                f.write(line)
+
+        i += 1
+
+
+
 if __name__ == '__main__':
     filename = 'speeds.csv'
     # split_csv_data(filename,201603020000,201603022355, '20160302')
-    split_by_remove_some_timestamps(filename, [(201603050000, 201603062355),
-                                               (201603120000, 201603132355),
-                                               (201603190000, 201603202355),
-                                               (201603260000, 201603272355),
-                                               (201604020000, 201604042355),
-                                               (201604090000, 201604102355),
-                                               (201604160005, 201604172355)],
-                                    'speed_nzero.csv')
+    # split_by_remove_some_timestamps(filename, [(201603050000, 201603062355),
+    #                                            (201603120000, 201603132355),
+    #                                            (201603190000, 201603202355),
+    #                                            (201603260000, 201603272355),
+    #                                            (201604020000, 201604042355),
+    #                                            (201604090000, 201604102355),
+    #                                            (201604160005, 201604172355)],
+    #                                 'speed_nzero.csv')
 
-
+    split_out(filename, [(201603110600,201603111000),
+                         (201603180600,201603181000),
+                         (201604190600,201604191000)],
+              ['VadiationSet/311_6_10.csv','VadiationSet/318_6_10.csv','VadiationSet/419_6_10.csv'],'speed_no_valid.csv')
 
 
 
