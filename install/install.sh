@@ -1,8 +1,6 @@
-# ／usr/bin bash
+#!/usr/bin/env bash
 
 git clone https://github.com/baidu/Paddle paddle
-cd paddle
-
 
 # swig
 swig=swig.tar.gz
@@ -30,8 +28,7 @@ python2 setup.py build
 python2 setup.py test
 python2 setup.py install
 
-
-
+cd paddle
 
 mkdir build && cd build
 cmake .. -DWITH_GPU=OFF -DWITH_DOC=ON -DWITH_SWIG_PY=ON -WITH_GLOG=ON -WITH_GFLAGS=ON -DCMAKE_INSTALL_PREFIX=/usr/local
