@@ -134,6 +134,50 @@ def split_out(input_file, dates, ouput_files, output_main_file):
 
 
 
+
+
+def get_test_data(test_file_name, train_data_name, inputfile, dates):
+    data = {}
+    timestamps = []
+    split_timestamps = []
+    with open(inputfile, 'r') as f:
+        s = f.readlines()
+        timestamps = s[0].rstrip('\n\r').split(',')[1:]
+        timestamps = map(int, timestamps)
+        for line in s[1:]:
+            line = map(int, line.rstrip('\n\r').split(','))
+            data['%s' % line[0]] = line[1:]
+    indexes = range(0, len(timestamps),1)
+    print len(indexes)
+    for _date in dates:
+        from_index = timestamps.index(_date[0])
+        end_index = timestamps.index(_date[1])
+        for i in range(from_index, end_index+1):
+            indexes.remove(i)
+        split_timestamps.extend(range(from_index, end_index+1))
+
+    with open(train_data_name, 'w+') as f:
+        line = 'id,'
+        line += ','.join(['%s' % timestamps[x] for x in indexes])
+        line += '\n'
+        f.write(line)
+        for point in data:
+            line = '%s,' % point
+            line += ','.join(['%s' % data[point][p] for p in indexes])
+            line += '\n'
+            f.write(line)
+    with open(test_file_name, 'w+') as f:
+        line = 'id,'
+        line += ','.join(['%s' % timestamps[x] for x in split_timestamps])
+        line += '\n'
+        f.write(line)
+        for point in data:
+            line = '%s,' % point
+            line += ','.join(['%s' % data[point][p] for p in split_timestamps])
+            line += '\n'
+            f.write(line)
+
+
 if __name__ == '__main__':
     filename = 'speeds.csv'
     # split_csv_data(filename,201603020000,201603022355, '20160302')
@@ -146,10 +190,12 @@ if __name__ == '__main__':
     #                                            (201604160005, 201604172355)],
     #                                 'speed_nzero.csv')
 
-    split_out(filename, [(201603110600,201603111000),
-                         (201603180600,201603181000),
-                         (201604190600,201604191000)],
-              ['VadiationSet/311_6_10.csv','VadiationSet/318_6_10.csv','VadiationSet/419_6_10.csv'],'speed_no_valid.csv')
-
-
+    # split_out(filename, [(201603110600,201603111000),
+    #                      (201603180600,201603181000),
+    #                      (201604190600,201604191000)],
+    #           ['VadiationSet/311_6_10.csv','VadiationSet/318_6_10.csv','VadiationSet/419_6_10.csv'],'speed_no_valid.csv')
+    #
+    # get_test_data('test_speeds.csv', 'train_speeds.csv', 'speed_nzero.csv',[(201603140000, 201603152355),
+    #                                                                         (201603210000, 201603242355),
+    #                                                                         (201604180000, 201604192355)])
 

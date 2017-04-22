@@ -86,7 +86,7 @@ def generate_links_split_file(points, point_name):
             f.write(line)
 
 
-def generate_speed_data_2(center_point, subnodes, nearby,data_set):
+def generate_speed_data_2(center_point, subnodes, nearby,data_set, file_dir):
     center = data_set['%s' % center_point]
     nearby_nodes = []
     for i in nearby:
@@ -95,7 +95,7 @@ def generate_speed_data_2(center_point, subnodes, nearby,data_set):
     for i in subnodes:
         subs.append(data_set['%s' % i])
 
-    with open('speed_data/%s.txt' % center_point, 'w+') as f:
+    with open('%s/%s.txt' % (file_dir, center_point), 'w+') as f:
         line = ','.join(['%s' % x for x in center])
         line += '\n'
         f.write(line)
@@ -236,14 +236,15 @@ def get_predict_data_2(dataset):
             subnodes = map(int, part[2].split(','))
             generate_predicts_2(title, nearby_nodes, subnodes, dataset)
 
-def get_speed_data_2(dataset):
+
+def get_speed_data_2(dataset, file_dir):
     with open('two_dist_point', 'r') as f:
         for line in f.readlines():
             part = line.rstrip('\n\r').split(';')
             title = int(part[0])
             nearby_nodes = map(int, part[1].split(','))
             subnodes = map(int, part[2].split(','))
-            generate_speed_data_2(title, nearby_nodes, subnodes, dataset)
+            generate_speed_data_2(title, nearby_nodes, subnodes, dataset, file_dir)
 
 
 def get_predict_valid(dataset):
@@ -266,6 +267,11 @@ if __name__ == '__main__':
     # get_points_count_list_2()
     # get_speed_data_2(dataset)
     # get_predict_data_2(dataset)
-    dataset = create_dataset('VadiationSet/311.csv')
-    get_predict_valid(dataset)
+    # dataset = create_dataset('VadiationSet/311.csv')
+    # get_predict_valid(dataset)
+    dataset = create_dataset('test_speeds.csv')
+    get_speed_data_2(dataset, 'test')
+    dataset = create_dataset('train_speeds.csv')
+    get_speed_data_2(dataset, 'train')
+
 
