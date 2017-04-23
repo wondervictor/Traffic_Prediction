@@ -12,7 +12,7 @@ output_dir=./output
    --dot_period=100 \
    --num_passes=50 \
    --use_gpu=false \
-   --config_args=nearby_num=2,subnode=6,point=22670 \
+   --config_args=nearby_num=4,subnode=5,point=28469 \
    --show_parameter_stats_period=3000 \
    2>&1 | tee 'output/train22670.log'
 

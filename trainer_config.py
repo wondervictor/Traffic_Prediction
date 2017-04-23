@@ -11,9 +11,9 @@ point = get_config_arg('point', int, 0)
 
 
 with open('data/train.list', 'w') as f:
-    f.write('data/speed_data/%s.txt' % point)
+    f.write('data/train/%s.txt' % point)
 with open('data/test.list', 'w') as f:
-    f.write('data/speed_data/%s.txt' % point)
+    f.write('data/test/%s.txt' % point)
 process = 'process'
 if is_predict:
     process = 'process_predict'
