@@ -25,7 +25,7 @@ do
    paddle train \
    --config=$cfg \
    --save_dir=$output_dir \
-   --trainer_count=4 \
+   --trainer_count=2 \
    --log_period=100 \
    --dot_period=100 \
    --num_passes=50 \
