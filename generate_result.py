@@ -3,6 +3,8 @@
 
 import sys
 
+
+
 def generate(point, file_name):
     data = []
     with open(file_name, 'r') as f:

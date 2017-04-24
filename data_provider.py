@@ -35,8 +35,7 @@ def process(settings, filename):
         result = dict()
         for j in range(node_num):
             key = 'data_%s' % j
-            result[key] = [[data[j][k]-1 for k in range(i, i+TERM_SIZE)]]
-
+            result[key] = [[(data[j][k])/4.0 for k in range(i, i+TERM_SIZE)]]
         # result['label'] = data[0][i+TERM_SIZE] - 1
         # if result['label'] == -1:
         #     result['label'] = random.randint(0, 3)
@@ -44,7 +43,7 @@ def process(settings, filename):
         label = data[0][i+TERM_SIZE:i+2*TERM_SIZE]
         for j in range(TERM_SIZE):
             if label[j] == 0:
-                 label[j] = random.randint(1, 4)
+                 label[j] = 1
             label[j] -= 1
             label_key = 'label_%s' % j
             result[label_key] = label[j]
@@ -114,5 +113,5 @@ def process_predict(settings, filename):
             max_len = len(speeds)
         for i in range(node_num):
             key = 'data_%s' % i
-            result[key] = [[data[i][k]-1 for k in range(0, TERM_SIZE)]]
+            result[key] = [[data[i][k]/4.0 for k in range(0, TERM_SIZE)]]
         yield result
