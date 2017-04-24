@@ -13,7 +13,6 @@ def initialize(settings, num, point, **kwargs):
     for i in range(num):
         key = 'data_%s' % i
         s[key] = dense_vector_sequence(TERM_SIZE)
-
     #s['label'] = integer_value_sequence(TERM_SIZE)
     for i in range(TERM_SIZE):
         label_key = 'label_%s' % i
@@ -36,7 +35,7 @@ def process(settings, filename):
         result = dict()
         for j in range(node_num):
             key = 'data_%s' % j
-            result[key] = [[data[j][k] for k in range(i, i+TERM_SIZE)]]
+            result[key] = [[data[j][k]-1 for k in range(i, i+TERM_SIZE)]]
 
         # result['label'] = data[0][i+TERM_SIZE] - 1
         # if result['label'] == -1:
@@ -52,10 +51,6 @@ def process(settings, filename):
         # logging.info(result)
         # result['label'] = label
         yield result
-
-
-
-
 
 # def initialize(settings, num, point, **kwargs):
 #     s = dict()
@@ -119,5 +114,5 @@ def process_predict(settings, filename):
             max_len = len(speeds)
         for i in range(node_num):
             key = 'data_%s' % i
-            result[key] = [[data[i][k] - 1 for k in range(0, TERM_SIZE)]]
+            result[key] = [[data[i][k]-1 for k in range(0, TERM_SIZE)]]
         yield result

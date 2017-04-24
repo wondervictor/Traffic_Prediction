@@ -47,8 +47,8 @@ if is_predict:
 settings(
     batch_size=batch_size,
     learning_rate=0.0001,
-    learning_method=MomentumOptimizer(1e-4),
-    regularization=L2Regularization(8e-4)
+    learning_method=MomentumOptimizer(1e-4),#RMSPropOptimizer(epsilon=0.0001,rho=0.95),
+    regularization=L2Regularization(1e-4)
 )
 
 TERM_SIZE = 24
@@ -74,21 +74,25 @@ for j in range(subnode_num):
 
 nearby_nodes = []
 
+bias_param = ParameterAttribute(initial_std=0.001/(math.sqrt(NODE_NUM)))
+
+
 drop_param = ExtraLayerAttribute(drop_rate=0.2)
 # aggregate all nearby nodes
 nearby_fc_layer_1 = fc_layer(input=nearby_nodes_inputs, size=nearby_num, act=ReluActivation(), layer_attr=drop_param)
 # all subnodes
-nearby_second_fc_layer = fc_layer(input=nearby_2_nodes_inputs, size=subnode_num, act=ReluActivation())
+nearby_second_fc_layer = fc_layer(input=nearby_2_nodes_inputs, size=subnode_num, act=ReluActivation(),bias_attr=bias_param)
 
 lstm_forward_nearby_layer = simple_lstm(input=nearby_fc_layer_1, size=nearby_num, act=ReluActivation())
+
 lstm_backward_nearby_layer = simple_lstm(input=nearby_fc_layer_1, size=nearby_num, act=ReluActivation(), reverse=True)
 
 lstm_forward_second_layer = simple_lstm(input=nearby_second_fc_layer, size=subnode_num, act=ReluActivation())
 lstm_backward_second_layer = simple_lstm(input=nearby_second_fc_layer, size=subnode_num, act=ReluActivation(), reverse=True)
 
-nearby_fc_layer_2 = fc_layer(input=[lstm_backward_nearby_layer, lstm_forward_nearby_layer], size=nearby_num*4, act=ReluActivation())
+nearby_fc_layer_2 = fc_layer(input=[lstm_backward_nearby_layer, lstm_forward_nearby_layer], size=nearby_num*4, act=ReluActivation(),bias_attr=bias_param)
 
-nearby_second_fc_layer_2 = fc_layer(input=[lstm_backward_second_layer, lstm_forward_second_layer], size=subnode_num*4, act=ReluActivation())
+nearby_second_fc_layer_2 = fc_layer(input=[lstm_backward_second_layer, lstm_forward_second_layer], size=subnode_num*4, act=ReluActivation(),bias_attr=bias_param)
 
 
 # nearby_lstm = simple_lstm(input=nearby_fc_layer_2, size=nearby_num,act=ReluActivation())
@@ -148,8 +152,7 @@ for i in range(0, TERM_SIZE):
 
     if i % 2 == 0:
         lstm_tmp_layer = simple_lstm(input=drop_tmp_layer, size=NODE_NUM, act=ReluActivation())
-        lstm_tmp_layer_backward = simple_lstm(input=drop_tmp_layer, size=NODE_NUM, act=ReluActivation(), reverse=True)
-
+        # lstm_tmp_layer_backward = simple_lstm(input=drop_tmp_layer, size=NODE_NUM, act=ReluActivation(), reverse=True)
         con_layers = concat_layer(input=[fc_tmp_layer, lstm_tmp_layer, center_with_nearby_layer])
     result_aggrerate_layer = last_seq(con_layers)
 
@@ -157,7 +160,7 @@ for i in range(0, TERM_SIZE):
                            size=4*NODE_NUM,
                            act=STanhActivation())
 
-    drop_tmp_2_layer = dropout_layer(input=final_layer, dropout_rate=0.2)
+    drop_tmp_2_layer = dropout_layer(input=final_layer, dropout_rate=0.3)
 
     time_value = fc_layer(input=drop_tmp_2_layer, size=4, act=SoftmaxActivation())
 
