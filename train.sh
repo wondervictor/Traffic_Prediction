@@ -3,6 +3,7 @@
 set -e
 
 point_list=$1
+
 # point_list='data/point_count_list_2_tmp'
 #output_dir=./output
 cfg=trainer_config.py
@@ -28,7 +29,7 @@ do
    log=./output/${point}.log
    paddle train \
    --config=${cfg} \
-   --save_dir=output \
+   --save_dir=${output_dir} \
    --trainer_count=28 \
    --log_period=1000 \
    --dot_period=100 \
