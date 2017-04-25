@@ -25,8 +25,8 @@ do
    num=`echo ${line}|cut -d " " -f 2`
    sub_num=`echo ${line}|cut -d " " -f 3`
 
-   output_dir=./output/${point}/
-   log=./output/${point}.log
+   output_dir=output/${point}/
+   log=output/${point}.log
    paddle train \
    --config=${cfg} \
    --save_dir=${output_dir} \

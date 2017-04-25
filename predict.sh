@@ -17,8 +17,6 @@ cfg=trainer_config.py
 
 #point_list='data/point_count_list_2_tmp'
 
-python csv_timestamp.py result.csv 201604190800 5 24
-
 while read line
 do
     point=`echo ${line}|cut -d " " -f 1`
@@ -32,5 +30,4 @@ do
         --init_model_path=${model} \
         --config_args=is_predict=1,nearby_num=${num},subnode=${sub_num},point=${point} \
         --predict_output_dir=result/${point}
-
 done < ${point_list}
