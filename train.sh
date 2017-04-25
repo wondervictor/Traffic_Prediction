@@ -32,7 +32,7 @@ do
    --trainer_count=28 \
    --log_period=1000 \
    --dot_period=100 \
-   --num_passes=65 \
+   --num_passes=50 \
    --use_gpu=false \
    --config_args=nearby_num=${num},subnode=${sub_num},point=${point} \
    --show_parameter_stats_period=3000 \

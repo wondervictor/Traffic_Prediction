@@ -24,7 +24,7 @@ do
     point=`echo ${line}|cut -d " " -f 1`
     num=`echo ${line}|cut -d " " -f 2`
     sub_num=`echo ${line}|cut -d " " -f 3`
-    model=output/${point}/pass-00026
+    model=output/${point}/pass-00049
     paddle train \
         --config=${cfg} \
         --use_gpu=false \
