@@ -284,27 +284,27 @@ if __name__ == '__main__':
 
 
     # no zero
-    # split_data.split_by_remove_some_timestamps('speeds.csv', [(201603050000, 201603062355),
-    #                                            (201603120000, 201603132355),
-    #                                            (201603190000, 201603202355),
-    #                                            (201603260000, 201603272355),
-    #                                            (201604020000, 201604042355),
-    #                                            (201604090000, 201604102355),
-    #                                            (201604160005, 201604172355)],
-    #                                            'speed_nzero.csv')
-    # filename = 'speed_nzero.csv'
-    #
-    # # validation
-    # split_data.split_out(filename, [(201603110600,201603111000),
-    #                                 (201603180600,201603181000),
-    #                                 (201604190600,201604191000)],
-    #                     ['VadiationSet/311_6_10.csv', 'VadiationSet/318_6_10.csv', 'VadiationSet/419_6_10.csv'], 'speed_no_valid.csv')
-    #
-    # split_data.get_test_data('test_speeds.csv', 'train_speeds.csv', 'speed_no_valid.csv', [(201603140000, 201603152355),
-    #                                                                                        (201603210000, 201603242355),
-    #                                                                                        (201604180000, 201604192355)])
-    # dataset = create_dataset('test_speeds.csv')
-    # get_speed_data_2(dataset, 'test')
-    #
-    # dataset = create_dataset('train_speeds.csv')
-    # get_speed_data_2(dataset, 'train')
+    split_data.split_by_remove_some_timestamps('speeds.csv', [(201603050000, 201603062355),
+                                               (201603120000, 201603132355),
+                                               (201603190000, 201603202355),
+                                               (201603260000, 201603272355),
+                                               (201604020000, 201604042355),
+                                               (201604090000, 201604102355),
+                                               (201604160005, 201604172355)],
+                                               'speed_nzero.csv')
+    filename = 'speed_nzero.csv'
+
+    # validation
+    split_data.split_out(filename, [(201603110600,201603111000),
+                                    (201603180600,201603181000),
+                                    (201604190600,201604191000)],
+                        ['VadiationSet/311_6_10.csv', 'VadiationSet/318_6_10.csv', 'VadiationSet/419_6_10.csv'], 'speed_no_valid.csv')
+
+    split_data.get_test_data('test_speeds.csv', 'train_speeds.csv', 'speed_no_valid.csv', [(201603140000, 201603152355),
+                                                                                           (201603210000, 201603242355),
+                                                                                           (201604180000, 201604192355)])
+    dataset = create_dataset('test_speeds.csv')
+    get_speed_data_2(dataset, 'test')
+
+    dataset = create_dataset('train_speeds.csv')
+    get_speed_data_2(dataset, 'train')
