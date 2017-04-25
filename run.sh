@@ -1,21 +1,22 @@
 #!/usr/bin/env bash
 
 # run sh
-
+#
 rm -rf output
 rm -rf result
 
-mkdir output
-mkdir result
+host=`hostname`
+
+point_list_file=${host}.train.list
+
+echo "${host} initializes data"
 
 # python preprocess.py
-
+echo "${host} starts to train"
 # train
-./train.sh
-
+./train.sh ${point_list_file}
 
 # predict
+echo "${host} starts to predict"
 
-./predict.sh
-
-python2.7 data/VadiationSet/RMSEValidator.py data/VadiationSet/419_6_10.csv result.csv
+./predict.sh ${point_list_file}

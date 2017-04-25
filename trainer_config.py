@@ -47,8 +47,9 @@ if is_predict:
 settings(
     batch_size=batch_size,
     learning_rate=0.0001,
-    learning_method=MomentumOptimizer(1e-4),#RMSPropOptimizer(epsilon=0.0001,rho=0.95),
-    regularization=L2Regularization(1e-4)
+    learning_method=RMSPropOptimizer(1e-5,0.9),#MomentumOptimizer(1e-4),#RMSPropOptimizer(epsilon=0.0001,rho=0.95),
+    regularization=L2Regularization(5e-4),
+    gradient_clipping_threshold=25
 )
 
 TERM_SIZE = 24
@@ -76,24 +77,25 @@ nearby_nodes = []
 
 bias_param = ParameterAttribute(initial_std=0.001/(math.sqrt(NODE_NUM)))
 
-
-
-drop_param = ExtraLayerAttribute(drop_rate=0.4)
+drop_param = ExtraLayerAttribute(drop_rate=0.2)
 # aggregate all nearby nodes
-nearby_fc_layer_1 = fc_layer(input=nearby_nodes_inputs, size=nearby_num, act=ReluActivation(),layer_attr=drop_param)
+nearby_fc_layer_1 = fc_layer(input=nearby_nodes_inputs, size=nearby_num, act=ReluActivation(),layer_attr=drop_param,bias_attr=bias_param)
 # all subnodes
-nearby_second_fc_layer = fc_layer(input=nearby_2_nodes_inputs, size=subnode_num, act=ReluActivation(),bias_attr=bias_param)
+nearby_second_fc_layer = fc_layer(input=nearby_2_nodes_inputs, size=subnode_num, act=ReluActivation(),layer_attr=drop_param,bias_attr=bias_param)
 
-lstm_forward_nearby_layer = simple_lstm(input=nearby_fc_layer_1, size=nearby_num, act=ReluActivation())
+lstm_para_attr = ParameterAttribute(initial_std=0., learning_rate=1.)
+bias_attr = ParameterAttribute(initial_std=0., l2_rate=0.)
+layer_attr = ExtraLayerAttribute(drop_rate=0.4)
 
-# lstm_backward_nearby_layer = simple_lstm(input=nearby_fc_layer_1, size=nearby_num, act=ReluActivation(), reverse=True)
+lstm_forward_nearby_layer = simple_lstm(input=nearby_fc_layer_1, size=nearby_num, act=ReluActivation(),bias_param_attr=bias_attr, inner_param_attr=lstm_para_attr,mixed_layer_attr=layer_attr)
+lstm_backward_nearby_layer = simple_lstm(input=nearby_fc_layer_1, size=nearby_num, act=ReluActivation(), reverse=True,bias_param_attr=bias_attr)
 
-lstm_forward_second_layer = simple_lstm(input=nearby_second_fc_layer, size=subnode_num, act=ReluActivation())
-# lstm_backward_second_layer = simple_lstm(input=nearby_second_fc_layer, size=subnode_num, act=ReluActivation(), reverse=True)
+lstm_forward_second_layer = simple_lstm(input=nearby_second_fc_layer, size=subnode_num, act=ReluActivation(),bias_param_attr=bias_attr, inner_param_attr=lstm_para_attr,mixed_layer_attr=layer_attr)
+lstm_backward_second_layer = simple_lstm(input=nearby_second_fc_layer, size=subnode_num, act=ReluActivation(), reverse=True,bias_param_attr=bias_attr)
 
-nearby_fc_layer_2 = fc_layer(input=[ lstm_forward_nearby_layer], size=nearby_num*4, act=ReluActivation(), bias_attr=bias_param)
+nearby_fc_layer_2 = fc_layer(input=[lstm_forward_nearby_layer, lstm_backward_nearby_layer], size=nearby_num*4, act=ReluActivation(), bias_attr=bias_param)
 
-nearby_second_fc_layer_2 = fc_layer(input=[lstm_forward_second_layer], size=subnode_num*4, act=ReluActivation(), bias_attr=bias_param)
+nearby_second_fc_layer_2 = fc_layer(input=[lstm_forward_second_layer, lstm_backward_second_layer], size=subnode_num*4, act=ReluActivation(), bias_attr=bias_param)
 
 
 # nearby_lstm = simple_lstm(input=nearby_fc_layer_2, size=nearby_num,act=ReluActivation())
@@ -105,20 +107,27 @@ large_drop = ExtraLayerAttribute(drop_rate=0.4)
 nearby_all_fc_layer = fc_layer(input=concat_layer(input=[nearby_fc_layer_2, nearby_second_fc_layer_2]),
                                size=nearby_num*subnode_num,
                                act=TanhActivation(),
-                               layer_attr=large_drop)
+                               layer_attr=large_drop,
+                               bias_attr=bias_param)
 
-nearby_all_aggregate_layer = fc_layer(input=nearby_all_fc_layer, size=nearby_num, act=ReluActivation())
+nearby_bias = ParameterAttribute(learning_rate=1.5, initial_mean=0, initial_std=0.001)
+
+nearby_all_aggregate_layer = fc_layer(input=nearby_all_fc_layer,
+                                      size=nearby_num,
+                                      act=ReluActivation(),
+                                      bias_attr=nearby_bias)
 
 # nearby_all_lstm = simple_lstm(input=nearby_all_aggregate_layer, size=nearby_num, act=ReluActivation())
 #
 # center_lstm = simple_lstm(input=center_data, size=1, act=ReluActivation())
 
-center_bias = ParameterAttribute(name='center_nearby_bias',learning_rate=2., initial_mean=0., initial_std=math.sqrt(0.0001/NODE_NUM))
+center_bias = ParameterAttribute(name='center_nearby_i',learning_rate=2., initial_mean=0., initial_std=0.001)
 
 center_with_nearby_layer = fc_layer(input=[nearby_all_aggregate_layer, center_data, nearby_fc_layer_2, nearby_second_fc_layer_2],
                                     size=NODE_NUM * 4,
-                                    act=ReluActivation())
-                                    #bias_attr=center_bias)
+                                    act=ReluActivation(),
+                                    bias_attr=center_bias
+                                    )
 
  #
 # center_forward_lstm = simple_lstm(input=center_data, size=1, act=ReluActivation())
@@ -128,8 +137,15 @@ center_with_nearby_layer = fc_layer(input=[nearby_all_aggregate_layer, center_da
 con_layers = concat_layer(input=[center_data, center_with_nearby_layer])
 
 con_layers = fc_layer(input=con_layers, size=NODE_NUM*4)
-
-increment_layer = fc_layer(input=[center_data, center_with_nearby_layer,nearby_all_aggregate_layer], size=NODE_NUM*4, act=TanhActivation())
+increment_bias = ParameterAttribute(name='increment_bias',
+                                    momentum=0.0001,
+                                    l2_rate=0.,
+                                    initial_std=0.001,
+                                    initial_mean=0.)
+increment_layer = fc_layer(input=[center_data, center_with_nearby_layer, nearby_all_aggregate_layer],
+                           size=NODE_NUM*4,
+                           act=TanhActivation(),
+                           bias_attr=increment_bias)
 
 # output_result = []
 
@@ -140,43 +156,57 @@ for i in range(TERM_SIZE):
 
 
 SIZE = TERM_SIZE
+# forward_layer = con_layers
 
 for i in range(0, TERM_SIZE):
     bias_attrs_tmp_1 = ParameterAttribute(name='bias_attr_tmp_1_%s' % i,
                                           learning_rate=1.,
                                           initial_mean=0.,
+                                          l2_rate=0.,
                                           initial_std=0.001)
-    para_attr_tmp_1 = ParameterAttribute(name='para_attr_tmp_1_%s' % i,
-                                         initial_mean=0.,
-                                         learning_rate=1.,
-                                         initial_std=0.001/math.sqrt(NODE_NUM*4))
+    # para_attr_tmp_1 = ParameterAttribute(name='para_attr_tmp_1_%s' % i,
+    #                                      initial_mean=0.,
+    #                                      learning_rate=2.,
+    #                                      initial_std=0.001/math.sqrt(NODE_NUM*4))
 
     fc_tmp_layer = fc_layer(input=con_layers,
                             size=NODE_NUM * 4,
                             act=ReluActivation(),
-                            bias_attr=bias_attrs_tmp_1,
-                            param_attr=para_attr_tmp_1
+                            bias_attr=bias_attrs_tmp_1
                             )
 
     if i % 2 == 0:
         res_layer = addto_layer(input=[con_layers, increment_layer], act=ReluActivation())
         drop_tmp_layer = dropout_layer(input=res_layer, dropout_rate=0.4)
-        lstm_tmp_layer = simple_lstm(input=drop_tmp_layer, size=NODE_NUM*4, act=ReluActivation())
+        lstm_tmp_layer = simple_lstm(input=drop_tmp_layer, size=NODE_NUM*4, act=ReluActivation(),bias_param_attr=bias_attr, inner_param_attr=lstm_para_attr,mixed_layer_attr=layer_attr)
         # lstm_tmp_layer_backward = simple_lstm(input=drop_tmp_layer, size=NODE_NUM, act=ReluActivation(), reverse=True)
         con_layers = concat_layer(input=[fc_tmp_layer, lstm_tmp_layer, center_with_nearby_layer])
     else:
+        # con_layers = concat_layer(input=fc_tmp_layer])
         con_layers = dropout_layer(input=fc_tmp_layer, dropout_rate=0.4)
 
     con_layers = fc_layer(input=con_layers, size=NODE_NUM*4, act=ReluActivation())
     result_aggrerate_layer = last_seq(con_layers)
 
+    final_bias = ParameterAttribute(name='final_bias_%s' % i,
+                                    momentum=0.0001,
+                                    l2_rate=0.,
+                                    initial_std=0.001,
+                                    initial_mean=0.)
+    # para_attr = ParameterAttribute(name='final_param_%s' % i,
+    #                                momentum=0.0001,
+    #                                l2_rate=0.,
+    #                                learning_rate=0.0001,
+    #                                initial_std=0.0001/(4*NODE_NUM),
+    #                                initial_mean=0.)
+
     final_layer = fc_layer(input=result_aggrerate_layer,
                            size=4*NODE_NUM,
-                           act=STanhActivation())
+                           act=STanhActivation(),bias_attr=final_bias)
 
-    drop_tmp_2_layer = dropout_layer(input=final_layer, dropout_rate=0.3)
-
-    time_value = fc_layer(input=drop_tmp_2_layer, size=4, act=SoftmaxActivation())
+    # drop_tmp_2_layer = dropout_layer(input=final_layer, dropout_rate=0.3)
+    # forward_layer = drop_tmp_2_layer
+    time_value = fc_layer(input=final_layer, size=4, act=SoftmaxActivation())
 
     if not is_predict:
         ecost = classification_cost(input=time_value, name='cost%s' % i, label=labels[i])

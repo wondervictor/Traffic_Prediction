@@ -2,6 +2,8 @@
 
 set -e
 
+point_list=$1
+
 cfg=trainer_config.py
 #model=output/pass-00049
 #    paddle train \
@@ -13,7 +15,7 @@ cfg=trainer_config.py
 #        --predict_output_dir=result/25380
 #        python2.7 generate_result.py 25380 result/25380/rank-00000
 
-point_list='data/point_count_list_2_tmp'
+#point_list='data/point_count_list_2_tmp'
 
 python csv_timestamp.py result.csv 201604190800 5 24
 
@@ -30,6 +32,5 @@ do
         --init_model_path=${model} \
         --config_args=is_predict=1,nearby_num=${num},subnode=${sub_num},point=${point} \
         --predict_output_dir=result/${point}
-        python2.7 generate_result.py ${point} result/${point}/rank-00000
 
 done < ${point_list}
