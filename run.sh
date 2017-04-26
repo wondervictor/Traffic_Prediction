@@ -4,10 +4,6 @@ cd  /home/uniquesc/cth/Traffic_Prediction
 
 # run sh
 #
-rm -rf output
-rm -rf result
-
-
 
 host=`hostname`
 
