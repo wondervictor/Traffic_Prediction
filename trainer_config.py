@@ -193,19 +193,11 @@ for i in range(0, TERM_SIZE):
                                     l2_rate=0.,
                                     initial_std=0.001,
                                     initial_mean=0.)
-    # para_attr = ParameterAttribute(name='final_param_%s' % i,
-    #                                momentum=0.0001,
-    #                                l2_rate=0.,
-    #                                learning_rate=0.0001,
-    #                                initial_std=0.0001/(4*NODE_NUM),
-    #                                initial_mean=0.)
 
     final_layer = fc_layer(input=result_aggrerate_layer,
                            size=4*NODE_NUM,
                            act=STanhActivation(),bias_attr=final_bias)
 
-    # drop_tmp_2_layer = dropout_layer(input=final_layer, dropout_rate=0.3)
-    # forward_layer = drop_tmp_2_layer
     time_value = fc_layer(input=final_layer, size=4, act=SoftmaxActivation())
 
     if not is_predict:
