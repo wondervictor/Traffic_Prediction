@@ -205,14 +205,14 @@ def generate_point_list_for_node(num):
     with open('point_count_list_2', 'r') as f:
         data = f.readlines()
         data_len = len(data)
-        per_num = data_len/num + 1
+        per_num = data_len/num
         for i in range(0,num-1):
             line = ''.join(data[i*per_num:(i+1)*per_num])
-            with open('node%s.train.list' % (i+3), 'w+') as node_file:
+            with open('node%s.train.list' % (i+1), 'w+') as node_file:
                 node_file.write(line)
 
         line = ''.join(data[(num-1)*per_num:])
-        with open('node%s.train.list' % (num+2), 'w+') as node_file:
+        with open('node%s.train.list' % num, 'w+') as node_file:
             node_file.write(line)
 
 if __name__ == '__main__':

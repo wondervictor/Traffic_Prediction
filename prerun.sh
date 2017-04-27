@@ -4,7 +4,6 @@ mkdir output
 mkdir result
 touch result.csv
 cd data
-python split_data.py 10
 python preprocess.py
 cd ..
 

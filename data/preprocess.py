@@ -310,8 +310,8 @@ if __name__ == '__main__':
     # split_data.get_test_data('test_speeds.csv', 'train_speeds.csv', 'speed_no_valid.csv', [(201603140000, 201603152355),
     #                                                                                        (201603210000, 201603242355),
     #                                                                                        (201604180000, 201604192355)])
-    # dataset = create_dataset('test_speeds.csv')
-    # get_speed_data_2(dataset, 'test')
-    #
-    # dataset = create_dataset('train_speeds.csv')
-    # get_speed_data_2(dataset, 'train')
+    dataset = create_dataset('test_speeds.csv')
+    get_speed_data_2(dataset, 'test')
+
+    dataset = create_dataset('train_speeds.csv')
+    get_speed_data_2(dataset, 'train')
