@@ -24,12 +24,12 @@ def initialize(settings, num, point, **kwargs):
 def process(settings, filename):
     data = []
     node_num = settings.num
-    max_len = 0
+    max_len = 100000000000000000
     with open(filename, 'r') as f:
         for line in f.readlines():
             speed = map(int, line.rstrip('\n').split(','))
             data.append(speed)
-            max_len = len(speed)
+            max_len = min(len(speed),max_len)
 
     for i in range(0,max_len-2*TERM_SIZE, 1):
         result = dict()

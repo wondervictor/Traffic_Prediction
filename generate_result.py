@@ -23,7 +23,7 @@ def generate(point, file_name):
 #     generate(point, name)
 
 if __name__ == '__main__':
-    csv_timestamp.add_timestamp('result.csv', 201604190800, 5, 24)
+    csv_timestamp.add_timestamp('result.csv', 201605250800, 5, 24)
     point_list = []
     with open('data/point_count_list_2', 'r') as f:
         data = f.readlines()
