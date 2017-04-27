@@ -9,7 +9,7 @@ extend the surrounded node ranges.
 def create_link_list(filename):
     graph = {}
     with open(filename, 'r') as open_file:
-        for line in open_file.readlines():
+        for line in open_file.readlines()[1:]:
             pair_points = map(int, line.rstrip('\r\n').split(','))
 
             key = '%s' % (pair_points[0])
